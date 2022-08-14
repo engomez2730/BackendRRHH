@@ -54,8 +54,28 @@ exports.editarEmpleado = catchAsync(async (req,res,next) =>{
     })
 })
 exports.eliminarEmpleado = catchAsync(async (req,res,next) =>{
-    await employeeModel.findByIdAndDelete(req.params.id)
+    const empleadoLiquidado = await employeeModel.findById(req.params.id)
+    empleadoLiquidado.estado = false
+
     res.status(201).json({
-        status:'Success'
+        status:'Success',
+        prestacionesLaborables:empleadoLiquidado.PrestacionesLaborales,
+        tiempoEnlaEmpresa:empleadoLiquidado.tiempoEnLaEmpresa
     })
 })
+
+exports.ponerAusencia = catchAsync(async (req,res,next) =>{
+    const empleadoAusenciaUpdateds = await employeeModel.findById(req.params.id)
+
+    if(!empleadoAusenciaUpdateds) next(new AppError('No existe empleado con este ID'))
+
+    empleadoAusenciaUpdateds.ausencias = empleadoAusenciaUpdateds.ausencias + 1
+    await empleadoAusenciaUpdateds.save()
+
+
+    res.status(201).json({
+        status:'Success',
+        empleadoAusenciaUpdateds
+    })
+})
+

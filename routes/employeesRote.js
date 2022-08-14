@@ -16,5 +16,10 @@ Router
 .patch(employeesController.editarEmpleado)
 .delete(employeesController.eliminarEmpleado)
 
+Router
+.route('/ausencias/:id')
+.patch(employeesController.ponerAusencia)
+.delete(employeesController.eliminarEmpleado)
+
 
 module.exports = Router

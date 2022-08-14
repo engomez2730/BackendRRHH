@@ -3,7 +3,7 @@ moment.locale('es')
 
 
 const calculateMonths = (date1,date2) =>{
-    return parseInt((date1 - date2) / (1000 * 3600 * 24 * 30));
+    return (date1 - date2) / (1000 * 3600 * 24 * 30);
 }
 
 const calculateYears = (date1,date2) =>{
@@ -12,8 +12,8 @@ const calculateYears = (date1,date2) =>{
 
 
 
-exports.calcularPrestaciones = (tiempoEmpresa,salario) =>{
-
+exports.calcularPrestaciones = (tiempoEmpresa,salario,tomoVacaciones,salarioVacaciones,regalia) =>{
+ 
     const meses = calculateMonths(new Date(),new Date('July 12, 2020 03:24:00'))
     const years = calculateYears(new Date(),new Date('July 12, 2020 03:24:00'))
     let preaviso = null;
@@ -38,20 +38,31 @@ exports.calcularPrestaciones = (tiempoEmpresa,salario) =>{
     }else if(meses > 12 && years >= 5){
         cesantia = years * 23
     }
-    
     const preavisoFinal = salario/ 23.83 * preaviso
     const cesantiaFinal = salario/ 23.83 * cesantia
-    return preavisoFinal + cesantiaFinal
+    if(!tomoVacaciones){
+        return preavisoFinal + cesantiaFinal + salarioVacaciones +regalia
+    }else{
+        return preavisoFinal + cesantiaFinal + regalia
+    }
+
     
+    
+}
+
+exports.vacacionesDisponibles = (createdAt) =>{
+   if(calculateMonths(new Date(),createdAt) >= 3){
+        return true
+    }else{
+        return false
+   }
 }
 
 
 exports.vacaciones = (tiempoEmpresa,salario) =>{
     const meses = calculateMonths(new Date(),new Date('July 12, 2020 03:24:00'))
     const years = calculateYears(new Date(),new Date('July 12, 2020 03:24:00'))
-
     let diasVaciones = null;
-
     if(meses < 5){
         return 'No tiene derechos a vacaciones'
     }else if(meses === 5){
@@ -73,9 +84,21 @@ exports.vacaciones = (tiempoEmpresa,salario) =>{
     }else{
         diasVaciones = 18
     }
-    
     return diasVaciones
-    
-    
-
 }
+
+
+exports.regalia = (createdAt,salario) =>{
+    let regalia;
+    if(createdAt.getFullYear() === new Date().getFullYear()){
+        const months = calculateMonths(new Date(),createdAt)
+        regalia = (salario / 12) * months
+   
+    }else if(createdAt.getFullYear() !== new Date().getFullYear()){
+        const months = calculateMonths(new Date(),new Date(`January 1, ${new Date().getFullYear()} 03:24:00`))
+        console.log(months)
+        regalia = (salario / 12) * months
+    }
+    return regalia
+}
+

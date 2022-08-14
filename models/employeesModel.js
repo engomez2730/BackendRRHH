@@ -77,9 +77,10 @@ const employeesSchema = new mongoose.Schema({
     puesto:{
         type:String
     },
-    vacaciones:{
-        type:String
-    },
+     vacacionesTomadas:{
+        type:Boolean,
+        default:false
+    }, 
     prestacionesLaborables:{
         type:String,
     },
@@ -95,6 +96,10 @@ const employeesSchema = new mongoose.Schema({
     },
     prestacionesLaborales:{
         type:String
+    },
+    ausencias:{
+        type:Number,
+        default:0
     }
 },
 {
@@ -103,8 +108,10 @@ const employeesSchema = new mongoose.Schema({
 })
 
 
-employeesSchema.virtual('PrestacionesLaborales').get(function() {
-    return this.tiempoEnLaEmpresa = calcular.calcularPrestaciones(this.createdAt,this.salarioBruto)
+//Virtuals 
+
+employeesSchema.virtual('tiempoEnLaEmpresa').get(function() {
+    return this.tiempoEnLaEmpresa = moment(this.createdAt).fromNow()
 });
 
 employeesSchema.virtual('DiaDeVacaciones').get(function() {
@@ -114,20 +121,34 @@ employeesSchema.virtual('DiaDeVacaciones').get(function() {
 employeesSchema.virtual('salarioPorVacaciones').get(function() {
     return this.DiaDeVacaciones = this.salarioBruto * calcular.vacaciones(this.createdAt,this.salarioBruto) / 23.83 
 });
+employeesSchema.virtual('regalia').get(function() {
+    return this.regalia = calcular.regalia(this.createdAt,this.salarioBruto)
+});
+employeesSchema.virtual('vacacionesDisponibles').get(function() {
+    return calcular.vacacionesDisponibles(this.createdAt)
+});
+
+employeesSchema.virtual('PrestacionesLaborales').get(function() {
+    return this.PrestacionesLaborales = calcular.calcularPrestaciones(this.createdAt,this.salarioBruto,this.vacacionesTomadas,this.salarioPorVacaciones,this.regalia)
+});
+
+//Methods
 
 employeesSchema.methods.correctPassword = async function(
     candidatePassword,
     userPassword
   ) {
     return await bcrypt.compare(candidatePassword, userPassword);
-  };
+};
 
+//Document Midlware
 employeesSchema.pre('save', async function(next){
     if(!this.isModified('password')) return
     this.password = await bcrypt.hash(this.password,12)
     this.passwordConfirm = undefined;
     next();
 })
+
 
 const userModel = new mongoose.model('Empleados',employeesSchema)
 
