@@ -10,6 +10,10 @@ const vacantesSchema = new mongoose.Schema({
         type:String,
         required:[true,'Una vacante debe tener un numero de trabajdores']
     },
+    descripcion:{
+        type:String,
+        required:[true,'Una vacante debe tener una descripcion']
+    },
     createdAt:{
         type:Date,
         default: new Date()

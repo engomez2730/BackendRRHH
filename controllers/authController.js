@@ -1,4 +1,6 @@
 const employeeModel = require('../models/employeesModel')
+const departamentoModel = require('../models/departamentosModel')
+
 const AppError = require('../utils/appErrorClass')
 const catchAsync =  require('../utils/catchAsync')
 const jwt = require('jsonwebtoken')
@@ -37,6 +39,13 @@ const createSendToken = (user, statusCode, res,req) => {
 
 exports.crearEmpleado = catchAsync(async (req,res) =>{
     const newEmpleado = await employeeModel.create(req.body)
+    const departamentoEscogido = await departamentoModel.findOne({nombre:newEmpleado.departamento})
+    
+    await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:newEmpleado._id}},{
+      new:true,
+      runValidators:true
+    })
+   
     const token = signToken(newEmpleado._id)
     res.status(201).json({
         status:'Success',

@@ -100,6 +100,11 @@ const employeesSchema = new mongoose.Schema({
     ausencias:{
         type:Number,
         default:0
+    },
+    departamento:{
+        type:String,
+        enum:['Administracion','Taller','Barrick','Falcondo','Planta de Agregados','Inmobiliaria','Rio','Topografia','Campamento']
+
     }
 },
 {
