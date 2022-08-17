@@ -1,11 +1,10 @@
 const anunciosModel = require('../models/anunciosModel')
-const AppError = require('../utils/appErrorClass')
 const catchAsync =  require('../utils/catchAsync')
+const factory = require('../utils/factory')
 
 exports.crearAnuncio = catchAsync(async (req,res) =>{
 
     const newAnuncio = await anunciosModel.create(req.body)
-  
     res.status(201).json({
         status:'Success',
         newAnuncio
@@ -13,9 +12,12 @@ exports.crearAnuncio = catchAsync(async (req,res) =>{
 })
 
 exports.verAnuncios = catchAsync(async (req,res) =>{
-
     const Anuncios = await anunciosModel.find({})
-  
+    Anuncios.forEach(e =>{
+        if(e.finishAt < Date.now()){
+            e.estado = false
+        }
+    }) 
     res.status(201).json({
         status:'Success',
         cantidadAnuncios:Anuncios.length,
@@ -24,49 +26,14 @@ exports.verAnuncios = catchAsync(async (req,res) =>{
 })
 
 exports.eliminarAnuncios = catchAsync(async (req,res) =>{
-
     await anunciosModel.deleteMany()
-  
     res.status(201).json({
         status:'Success',
     })
 })
 
 
-exports.verAnuncio = catchAsync(async (req,res,next) =>{
+exports.verAnuncio = factory.getOne(anunciosModel) 
+exports.actualizarAnuncio = factory.updateOne(anunciosModel) 
+exports.eliminarAnuncio = factory.deleteOne(anunciosModel) 
 
-    const anuncio = await anunciosModel.findById(req.params.id)
-    
-    if(!anuncio) next(new AppError('No existe usuario con este ID',404))
-
-    res.status(201).json({
-        status:'Success',
-        anuncio
-    })
-})
-
-exports.actualizarAnuncio = catchAsync(async (req,res,next) =>{
-
-    const anuncio = await anunciosModel.findByIdAndUpdate(req.params.id,req.body,{
-        new:true, 
-        runValidators:true
-    })
-
-    if(!anuncio) next(new AppError('No existe usuario con este ID',404))
-  
-    res.status(201).json({
-        status:'Success',
-        anuncio
-    })
-})
-
-exports.eliminarAnuncio = catchAsync(async (req,res,next) =>{
-
-    const anuncio = await anunciosModel.findByIdAndDelete(req.params.id)
-
-    if(!anuncio) next(new AppError('No existe usuario con este ID',404))
-  
-    res.status(201).json({
-        status:'Success',
-    })
-})

@@ -1,17 +1,12 @@
 const departamentoModel = require('../models/departamentosModel')
 const AppError = require('../utils/appErrorClass')
 const catchAsync =  require('../utils/catchAsync')
+const factory = require('../utils/factory')
 
 
-exports.crearDepartamento = catchAsync(async (req,res) =>{
-
-    const newDepartamento = await departamentoModel.create(req.body)
-  
-    res.status(201).json({
-        status:'Success',
-        newDepartamento
-    })
-})
+exports.crearDepartamento = factory.createOne(departamentoModel)
+exports.editarDepartamento = factory.updateOne(departamentoModel)
+exports.eliminarDepartamento = factory.deleteOne(departamentoModel)
 
 exports.verDepartamentos = catchAsync(async (req,res) =>{
     const Departamentos = await departamentoModel.find().populate({
@@ -48,22 +43,3 @@ exports.verDepartamento = catchAsync(async (req,res) =>{
     })
 })
 
-exports.editarDepartamento = catchAsync(async (req,res) =>{
-    const Departamentos = await departamentoModel.findByIdAndUpdate(req.params.id,req.body,{
-        new:true,
-        runValidators:true
-    })
-   
-    res.status(201).json({
-        status:'Success',
-        Departamentos
-    })
-})
-exports.eliminarDepartamento = catchAsync(async (req,res) =>{
-   await departamentoModel.findByIdAndDelete(req.params.id)
-   
-    res.status(201).json({
-        status:'Success'
-
-    })
-})

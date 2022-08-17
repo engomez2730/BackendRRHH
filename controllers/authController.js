@@ -40,12 +40,10 @@ const createSendToken = (user, statusCode, res,req) => {
 exports.crearEmpleado = catchAsync(async (req,res) =>{
     const newEmpleado = await employeeModel.create(req.body)
     const departamentoEscogido = await departamentoModel.findOne({nombre:newEmpleado.departamento})
-    
     await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:newEmpleado._id}},{
       new:true,
       runValidators:true
     })
-   
     const token = signToken(newEmpleado._id)
     res.status(201).json({
         status:'Success',
@@ -57,13 +55,11 @@ exports.crearEmpleado = catchAsync(async (req,res) =>{
 exports.signIn = catchAsync(async (req,res,next) =>{
     const {correo,password} = req.body;
     if(!correo || !password) return next( new AppError('Debe introducir correo y contraseña',401))
-
     const User = await employeeModel.findOne({correo:correo})
     if(!User || !(await User.correctPassword(password, User.password))){
         return next(new AppError('No hay usuarios que considan con ese correo',401)) 
     } 
     req.user = User
-
     createSendToken(User,404,res,req)
 
 })
@@ -77,13 +73,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  console.log(token)
 
   if (!token) next(new AppError('Tienes que estar logueado para ver esto', 401));
-
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
   const currentUser = await employeeModel.findById(decoded.id);
   if (!currentUser) next(new AppError('El usuario con este token ya no existe',401));
   

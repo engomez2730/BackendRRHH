@@ -146,13 +146,6 @@ employeesSchema.methods.correctPassword = async function(
     return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-//Document Midlware
-employeesSchema.pre('save', async function(next){
-    if(!this.isModified('password')) return
-    this.password = await bcrypt.hash(this.password,12)
-    this.passwordConfirm = undefined;
-    next();
-})
 
 
 const userModel = new mongoose.model('Empleados',employeesSchema)
