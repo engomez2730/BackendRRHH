@@ -13,7 +13,7 @@ Router
 Router
 .route('/:id')
 .get(employeesController.verEmpleado)
-.patch(employeesController.editarEmpleado)
+.patch(authController.protect,employeesController.uploadUserPhoto,employeesController.editarEmpleado)
 .delete(employeesController.eliminarEmpleado)
 
 Router

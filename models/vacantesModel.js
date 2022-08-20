@@ -14,6 +14,15 @@ const vacantesSchema = new mongoose.Schema({
         type:String,
         required:[true,'Una vacante debe tener una descripcion']
     },
+    curriculum:{
+        type:String
+    },
+    Solicitantes:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Solicitantes'
+        }
+    ],
     createdAt:{
         type:Date,
         default: new Date()
@@ -22,7 +31,6 @@ const vacantesSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     }
-
 },
 {
     toJSON: { virtuals: true },
@@ -32,4 +40,4 @@ const vacantesSchema = new mongoose.Schema({
 
 const vacantesModel = new mongoose.model('Vacantes',vacantesSchema)
 
-modules.exports = vacantesModel
+module.exports = vacantesModel

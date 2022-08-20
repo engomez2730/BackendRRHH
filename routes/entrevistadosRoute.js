@@ -10,16 +10,13 @@ Router
 .post(entrevistadosController.createEntrevistado)
 
 
-/* Router
-.route('/:id')
-.get(employeesController.verEmpleado)
-.patch(employeesController.editarEmpleado)
-.delete(employeesController.eliminarEmpleado)
-
 Router
-.route('/ausencias/:id')
-.patch(employeesController.ponerAusencia)
-.delete(employeesController.eliminarEmpleado) */
+.route('/:id')
+.get(entrevistadosController.verEntrevistado)
+.patch(entrevistadosController.editarEntrevistado)
+.delete(entrevistadosController.eliminarEntrevistado)
+
+
 
 
 module.exports = Router

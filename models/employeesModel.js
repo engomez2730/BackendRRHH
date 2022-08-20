@@ -101,6 +101,9 @@ const employeesSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    photo:{
+        type:String
+    },
     departamento:{
         type:String,
         enum:['Administracion','Taller','Barrick','Falcondo','Planta de Agregados','Inmobiliaria','Rio','Topografia','Campamento']
@@ -138,6 +141,18 @@ employeesSchema.virtual('PrestacionesLaborales').get(function() {
 });
 
 //Methods
+
+employeesSchema.pre('save', async function(next) {
+    // Only run this function if password was actually modified
+    if (!this.isModified('password')) return next();
+  
+    // Hash the password with cost of 12
+    this.password = await bcrypt.hash(this.password, 12);
+  
+    // Delete passwordConfirm field
+    this.passwordConfirm = undefined;
+    next();
+  });
 
 employeesSchema.methods.correctPassword = async function(
     candidatePassword,

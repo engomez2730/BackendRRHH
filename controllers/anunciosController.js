@@ -3,7 +3,6 @@ const catchAsync =  require('../utils/catchAsync')
 const factory = require('../utils/factory')
 
 exports.crearAnuncio = catchAsync(async (req,res) =>{
-
     const newAnuncio = await anunciosModel.create(req.body)
     res.status(201).json({
         status:'Success',
@@ -31,8 +30,6 @@ exports.eliminarAnuncios = catchAsync(async (req,res) =>{
         status:'Success',
     })
 })
-
-
 exports.verAnuncio = factory.getOne(anunciosModel) 
 exports.actualizarAnuncio = factory.updateOne(anunciosModel) 
 exports.eliminarAnuncio = factory.deleteOne(anunciosModel) 

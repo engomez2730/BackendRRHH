@@ -56,6 +56,7 @@ exports.signIn = catchAsync(async (req,res,next) =>{
     const {correo,password} = req.body;
     if(!correo || !password) return next( new AppError('Debe introducir correo y contraseña',401))
     const User = await employeeModel.findOne({correo:correo})
+    console.log(correo,password)
     if(!User || !(await User.correctPassword(password, User.password))){
         return next(new AppError('No hay usuarios que considan con ese correo',401)) 
     } 
@@ -66,6 +67,7 @@ exports.signIn = catchAsync(async (req,res,next) =>{
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
+
   let token;
   if (
     req.headers.authorization &&

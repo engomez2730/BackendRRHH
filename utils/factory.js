@@ -11,13 +11,13 @@ exports.deleteOne = Model =>
     }
 
     res.status(204).json({
-      status: 'success',
-      data: null
+      status: 'success'
     });
   });
 
 exports.updateOne = Model =>
   catchAsync(async (req, res, next) => {
+    console.log(req.file)
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true
