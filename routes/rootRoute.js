@@ -7,6 +7,7 @@ const authController = require('../controllers/authController')
 Router
 .route('/login')
 .post(authController.signIn)
+.get(authController.verLogin)
 
 
 

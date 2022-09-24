@@ -12,10 +12,10 @@ const calculateYears = (date1,date2) =>{
 
 
 
-exports.calcularPrestaciones = (tiempoEmpresa,salario,tomoVacaciones,salarioVacaciones,regalia) =>{
+exports.calcularPrestaciones = (createdAt,salario,tomoVacaciones,salarioVacaciones,regalia) =>{
  
-    const meses = calculateMonths(new Date(),new Date('July 12, 2020 03:24:00'))
-    const years = calculateYears(new Date(),new Date('July 12, 2020 03:24:00'))
+    const meses = calculateMonths(new Date(),new Date(createdAt))
+    const years = calculateYears(new Date(),new Date(createdAt))
     let preaviso = null;
     let cesantia = null
    if(meses < 3){
@@ -45,9 +45,6 @@ exports.calcularPrestaciones = (tiempoEmpresa,salario,tomoVacaciones,salarioVaca
     }else{
         return preavisoFinal + cesantiaFinal + regalia
     }
-
-    
-    
 }
 
 exports.vacacionesDisponibles = (createdAt) =>{
@@ -58,28 +55,27 @@ exports.vacacionesDisponibles = (createdAt) =>{
    }
 }
 
-
-exports.vacaciones = (tiempoEmpresa,salario) =>{
-    const meses = calculateMonths(new Date(),new Date('July 12, 2020 03:24:00'))
-    const years = calculateYears(new Date(),new Date('July 12, 2020 03:24:00'))
+exports.vacaciones = (createdAt) =>{
+    const meses = calculateMonths(new Date(),new Date(createdAt))
+    const years = calculateYears(new Date(),new Date(createdAt))
     let diasVaciones = null;
     if(meses < 5){
         return 'No tiene derechos a vacaciones'
-    }else if(meses === 5){
+    }else if(meses >= 5 && meses < 6){
         diasVaciones = 6
-    }else if(meses === 6){
+    }else if(meses >= 6 && meses < 7){
         diasVaciones = 7
-    }else if(meses === 7){
+    }else if(meses >= 7 && meses <8){
         diasVaciones = 8
-    }else if(meses === 8){
+    }else if(meses >= 8 && meses <8){
         diasVaciones = 9
-    }else if(meses === 9){
+    }else if(meses >= 9 && meses <10){
         diasVaciones = 10
-    }else if(meses === 10){
+    }else if(meses >= 10 && meses <11){
         diasVaciones = 11
-    }else if(meses === 11){
+    }else if(meses >= 11 && meses <12){
         diasVaciones = 12
-    }else if(meses >= 12 && years < 5){
+    }else if(meses >= 13 && meses <14){
         diasVaciones = 14
     }else{
         diasVaciones = 18
@@ -96,7 +92,6 @@ exports.regalia = (createdAt,salario) =>{
    
     }else if(createdAt.getFullYear() !== new Date().getFullYear()){
         const months = calculateMonths(new Date(),new Date(`January 1, ${new Date().getFullYear()} 03:24:00`))
-        console.log(months)
         regalia = (salario / 12) * months
     }
     return regalia

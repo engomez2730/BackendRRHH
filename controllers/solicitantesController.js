@@ -79,15 +79,13 @@ exports.editarSolicitante = catchAsync(async (req,res,next)=>{
       });
 })
 exports.nuevoSolicitante = catchAsync(async (req,res,next) =>{
-    /*    console.log(req.file)
-       console.log(req.body) */
    
        const filterOBject = {...req.body}
        if(req.file){
          filterOBject.curriculum = req.file.name || 'no tengo'
        }
    
-   
+
        const nuevoSolicitante = await vacantesModel.updateOne(
            {_id:req.params.id},
            {$push:{Solicitantes:filterOBject}},{

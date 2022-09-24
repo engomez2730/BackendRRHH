@@ -6,7 +6,7 @@ const authController = require('../controllers/authController')
 
 Router
 .route('/')
-.get(authController.protect,authController.darPermisos('admin'),employeesController.verEmpleados)
+.get(employeesController.verEmpleados)
 .post(authController.crearEmpleado)
 .delete(employeesController.eliminarEmpleados)
 

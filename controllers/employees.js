@@ -33,11 +33,13 @@ const multerFilter = (req, file, cb) => {
 
 
 exports.verEmpleados = catchAsync( async (req,res) =>{
-    const newEmpleado = await employeeModel.find({})
+
+    const Empleados = await employeeModel.find({})
+
     res.status(201).json({
         status:'Success',
         empleados:{
-            newEmpleado
+          Empleados
         }
     })
 })

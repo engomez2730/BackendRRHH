@@ -97,9 +97,17 @@ const employeesSchema = new mongoose.Schema({
     prestacionesLaborales:{
         type:String
     },
+    sexo:{
+        type:String,
+        enum:['Hombre','Mujer','Otro']
+    },
     ausencias:{
         type:Number,
         default:0
+    },
+    vencimintoDelContrato:{
+        type:Date,
+        required:false,
     },
     photo:{
         type:String
