@@ -40,8 +40,9 @@ app.use('/api/v1/anuncios',anunciosRoute)
 app.use('/api/v1/entrevistados',entrevistados)
 app.use('/api/v1/vacantes',vacantes)
 app.use('/api/v1/solicitantes',solicitantes)
+
 app.all('*',(req,res,next) =>{
-    next(new AppError(`La ruta ${req.originalUrl} no existe ☹`,404))
+   return next(new AppError(`La ruta ${req.originalUrl} no existe ☹`,404))
 })
 
 app.use(errorController)

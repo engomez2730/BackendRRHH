@@ -48,10 +48,7 @@ exports.crearEmpleado = catchAsync(async (req,res) =>{
 
     req.body.cedula = Number(req.body.cedula)
     req.body.celular = Number(req.body.celular)
-    
-    console.log(req.body)
-    
-
+        
     const newEmpleado = await employeeModel.create(req.body)
     const departamentoEscogido = await departamentoModel.findOne({nombre:newEmpleado.departamento})
     await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:newEmpleado._id}},{
@@ -60,15 +57,10 @@ exports.crearEmpleado = catchAsync(async (req,res) =>{
     })
 
     createSendToken(newEmpleado,201,res,req)
-
-
-
     res.status(201).json({
         status:'Success',
         newEmpleado,token
     })
-
-    
 })
 
 exports.signIn = catchAsync(async (req,res,next) =>{
@@ -76,8 +68,8 @@ exports.signIn = catchAsync(async (req,res,next) =>{
     if(!correo || !password) return next( new AppError('Debe introducir correo y contraseña',401))
     const User = await employeeModel.findOne({correo:correo})
     if(!User || !(await User.correctPassword(password, User.password))){
-
-        return next(new AppError('No hay usuarios que considan con ese correo',401)) 
+        console.log('fff')
+        return next(new AppError('Contraseña o correo incorrectos',401)) 
     } 
     req.user = User 
     createSendToken(User,201,res,req)

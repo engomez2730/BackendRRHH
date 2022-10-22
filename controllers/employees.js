@@ -54,6 +54,8 @@ exports.eliminarEmpleados = catchAsync(async (req,res) =>{
 exports.verEmpleado = factory.getOne(employeeModel)
 exports.editarEmpleado =catchAsync(async (req,res,next) =>{
 
+
+
     let filterOBject = {...req.body}
     if(req.file){
         filterOBject.photo = req.file.filename
@@ -85,5 +87,15 @@ exports.ponerAusencia = catchAsync(async (req,res,next) =>{
         status:'Success',
         empleadoAusenciaUpdateds
     })
+})
+
+exports.vacaciones = catchAsync(async (req,res,next) =>{
+  console.log(req.body)
+  const empleadoEditarVacaciones = await employeeModel.findByIdAndUpdate(req.params.id,req.body)
+  res.status(201).json({
+    status:'Success',
+    empleadoEditarVacaciones
+})
+
 })
 

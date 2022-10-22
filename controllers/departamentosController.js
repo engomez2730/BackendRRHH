@@ -4,9 +4,18 @@ const catchAsync =  require('../utils/catchAsync')
 const factory = require('../utils/factory')
 
 
-exports.crearDepartamento = factory.createOne(departamentoModel)
 exports.editarDepartamento = factory.updateOne(departamentoModel)
 exports.eliminarDepartamento = factory.deleteOne(departamentoModel)
+
+exports.crearDepartamento = catchAsync(async (req,res) =>{
+    const Departamentos = await departamentoModel.create(req.body)
+    res.status(201).json({
+        status:'Success',
+        data:{
+            Departamentos
+        }
+    })
+})
 
 exports.verDepartamentos = catchAsync(async (req,res) =>{
     const Departamentos = await departamentoModel.find().populate({

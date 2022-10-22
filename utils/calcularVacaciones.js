@@ -10,14 +10,13 @@ const calculateYears = (date1,date2) =>{
     return parseInt((date1 - date2) / (1000 * 60 * 60 * 24 * 30 * 12))
 }
 
-
-
 exports.calcularPrestaciones = (createdAt,salario,tomoVacaciones,salarioVacaciones,regalia) =>{
  
     const meses = calculateMonths(new Date(),new Date(createdAt))
     const years = calculateYears(new Date(),new Date(createdAt))
     let preaviso = null;
-    let cesantia = null
+    let cesantia = null;
+
    if(meses < 3){
         return'No tiene derechos a prestaciones laborables aun'
    }else if (meses >= 3 && meses <6){
@@ -41,7 +40,7 @@ exports.calcularPrestaciones = (createdAt,salario,tomoVacaciones,salarioVacacion
     const preavisoFinal = salario/ 23.83 * preaviso
     const cesantiaFinal = salario/ 23.83 * cesantia
     if(!tomoVacaciones){
-        return preavisoFinal + cesantiaFinal + salarioVacaciones +regalia
+        return preavisoFinal + cesantiaFinal + salarioVacaciones + regalia
     }else{
         return preavisoFinal + cesantiaFinal + regalia
     }
@@ -67,7 +66,7 @@ exports.vacaciones = (createdAt) =>{
         diasVaciones = 7
     }else if(meses >= 7 && meses <8){
         diasVaciones = 8
-    }else if(meses >= 8 && meses <8){
+    }else if(meses >= 8 && meses <9){
         diasVaciones = 9
     }else if(meses >= 9 && meses <10){
         diasVaciones = 10

@@ -8,6 +8,7 @@ const employeesSchema = new mongoose.Schema({
 
     nombre:{
         type:String,
+        unique:false,
         required:[true,'Un empleado debe tener un nombre'],
     },
     apellido:{
@@ -25,19 +26,17 @@ const employeesSchema = new mongoose.Schema({
     },
     celular:{
         type:Number,
-        required:[true,'Un empleado debe tener una telefono'],
+        required:[true,'Un empleado debe tener este campo'],
         unique:[true,'El numero de telefono del empleado existe en la base de datos']
 
     },
     correo:{
         type:String,
         unique:[true,'Este correo ya existe'],
-        required:[true,'Un empleado debe tener una correo'],
 
     },
     provincia:{
         type:String,
-        required:[true,'Un empleado debe tener una provincia'],
         enum : ['Azua','Barahuco','Barahona','Dajabon','Distrito Nacional',
         'Duarte','Elias Piña','El Seibo','Espaillat','Hato Mayor','Hermanas Mirabal',
         'Independencia','La Altagracias','La Romana','La Vega','Maria Trinidad Sanchez',
@@ -48,7 +47,8 @@ const employeesSchema = new mongoose.Schema({
     },
     pais:{
         type:String,
-        required:[true,'Un empleado debe tener un pais']
+        required:[true,'Un empleado debe tener este campo'],
+
     },
     createdAt:{
         type:Date,
@@ -56,13 +56,14 @@ const employeesSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-        required:[true,'Un Usuario debe tener una contraseña'],
+        required:[true,'Un empleado debe tener este campo'],
         minlength:8
     },
     confirmPassword:{
         type:String,
-        required:[true,'Un Usuario debe tener una contraseña'],
+        required:[true,'Un empleado debe tener este campo'],
         minlength:8
+
     },
     estado:{
         type:Boolean,
@@ -70,42 +71,55 @@ const employeesSchema = new mongoose.Schema({
     },
     contrato:{
         type:String,
-        default:true,
+        default:'indefinido',
         enum:['definido','indefinido','temporal'],
-        required:[true,'Un empleado debe tener un contrato']
     },
     puesto:{
         type:String
     },
-     vacacionesTomadas:{
+    vacacionesTomadas:{
         type:Boolean,
         default:false
     }, 
+    tiempoDeVacaciones:{
+        type:Array,
+        default:null
+    },
+    salarioPorVacaciones:{
+        type:Number,
+        default:null
+    },
     prestacionesLaborables:{
         type:String,
     },
     rol:{
         type:String,
-        required:[true,'Un usuario debe tener un rol'],
         default:'empleado',
         enum:['empleado','supervisor','admin']
     },
     salarioBruto:{
         type:Number,
-        required:[true,'Un empleado debe tener un salario']
+    },
+    salario:{
+        type:Number
     },
     prestacionesLaborales:{
         type:String
     },
     sexo:{
         type:String,
+        required:[true,'Un empleado debe tener este campo'],
         enum:['Hombre','Mujer','Otro']
+    },
+    fechaDeNacimiento:{
+        type:Date,
+        require:[true,'necesita una edad']
     },
     ausencias:{
         type:Number,
         default:0
     },
-    vencimintoDelContrato:{
+    vencimientoDelContrato:{
         type:Date,
         required:false,
     },
@@ -115,7 +129,6 @@ const employeesSchema = new mongoose.Schema({
     departamento:{
         type:String,
         enum:['Administracion','Taller','Barrick','Falcondo','Planta de Agregados','Inmobiliaria','Rio','Topografia','Campamento']
-
     }
 },
 {
@@ -134,9 +147,10 @@ employeesSchema.virtual('DiaDeVacaciones').get(function() {
     return this.DiaDeVacaciones = calcular.vacaciones(this.createdAt,this.salarioBruto)
 });
 
-employeesSchema.virtual('salarioPorVacaciones').get(function() {
-    return this.DiaDeVacaciones = this.salarioBruto * calcular.vacaciones(this.createdAt,this.salarioBruto) / 23.83 
-});
+/* employeesSchema.virtual('salarioPorVacaciones').get(function() {
+    return this.salarioPorVacaciones = this.salarioBruto * calcular.vacaciones(this.createdAt,this.salarioBruto) / 23.83 
+}); */
+
 employeesSchema.virtual('regalia').get(function() {
     return this.regalia = calcular.regalia(this.createdAt,this.salarioBruto)
 });
@@ -158,7 +172,10 @@ employeesSchema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, 12);
   
     // Delete passwordConfirm field
-    this.passwordConfirm = undefined;
+    this.confirmPassword = undefined;
+    console.log(this)
+    //
+    this.fechaDeNacimiento = moment(this.fechaDeNacimiento).fromNow()
     next();
   });
 

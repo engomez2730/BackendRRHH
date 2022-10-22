@@ -11,15 +11,21 @@ Router
 .delete(employeesController.eliminarEmpleados)
 
 Router
+.route('/vacaciones/:id')
+.patch(employeesController.vacaciones)
+
+Router
 .route('/:id')
 .get(employeesController.verEmpleado)
-.patch(authController.protect,employeesController.uploadUserPhoto,employeesController.editarEmpleado)
+.patch(employeesController.uploadUserPhoto,employeesController.editarEmpleado)
 .delete(employeesController.eliminarEmpleado)
 
 Router
 .route('/ausencias/:id')
 .patch(employeesController.ponerAusencia)
 .delete(employeesController.eliminarEmpleado)
+
+
 
 
 module.exports = Router
