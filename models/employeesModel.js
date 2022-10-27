@@ -100,7 +100,11 @@ const employeesSchema = new mongoose.Schema({
     salarioBruto:{
         type:Number,
     },
-    salario:{
+    salarioNeto:{
+        type:Number,
+        default:null
+    },
+    salarioAnual:{
         type:Number
     },
     prestacionesLaborales:{
@@ -129,6 +133,10 @@ const employeesSchema = new mongoose.Schema({
     departamento:{
         type:String,
         enum:['Administracion','Taller','Barrick','Falcondo','Planta de Agregados','Inmobiliaria','Rio','Topografia','Campamento']
+    },
+    fechaDeSiguientesVacaciones:{
+        type:Date,
+        default:null
     }
 },
 {
@@ -139,6 +147,10 @@ const employeesSchema = new mongoose.Schema({
 
 //Virtuals 
 
+employeesSchema.virtual('DescuentoTotal').get(function() {
+    return this.totalDescuento = calcular.nomina(this.salarioBruto).total_descuento
+});
+
 employeesSchema.virtual('tiempoEnLaEmpresa').get(function() {
     return this.tiempoEnLaEmpresa = moment(this.createdAt).fromNow()
 });
@@ -147,9 +159,6 @@ employeesSchema.virtual('DiaDeVacaciones').get(function() {
     return this.DiaDeVacaciones = calcular.vacaciones(this.createdAt,this.salarioBruto)
 });
 
-/* employeesSchema.virtual('salarioPorVacaciones').get(function() {
-    return this.salarioPorVacaciones = this.salarioBruto * calcular.vacaciones(this.createdAt,this.salarioBruto) / 23.83 
-}); */
 
 employeesSchema.virtual('regalia').get(function() {
     return this.regalia = calcular.regalia(this.createdAt,this.salarioBruto)
@@ -162,20 +171,64 @@ employeesSchema.virtual('PrestacionesLaborales').get(function() {
     return this.PrestacionesLaborales = calcular.calcularPrestaciones(this.createdAt,this.salarioBruto,this.vacacionesTomadas,this.salarioPorVacaciones,this.regalia)
 });
 
+
+
 //Methods
 
+const ordenarMeses = (mes,año) =>{
+    if(mes === 12){
+        mes = 1
+    }else if(mes === 13){
+        mes = 2
+    }else if(mes === 14){
+        mes = 3
+    }
+
+    return mes
+}
+
+const ordenaraños= (mes,año) =>{
+    if(mes === 12){
+        mes = 1
+        año = año + 1
+    }else if(mes === 13){
+        mes = 2
+        año = año + 1
+    }else if(mes === 14){
+        mes = 3
+        año = año + 1
+    }
+
+    return año
+}
+
+
+
 employeesSchema.pre('save', async function(next) {
-    // Only run this function if password was actually modified
-    if (!this.isModified('password')) return next();
-  
+
+
+     // Only run this function if password was actually modified
+/*     if (!this.isModified('password')) return next(); 
+ */  
     // Hash the password with cost of 12
     this.password = await bcrypt.hash(this.password, 12);
   
     // Delete passwordConfirm field
     this.confirmPassword = undefined;
-    console.log(this)
-    //
+    // Converting Born day to Moment 
     this.fechaDeNacimiento = moment(this.fechaDeNacimiento).fromNow()
+    //Date of next vacations
+    const fechaDeSiguientesVacaciones = new Date()
+    const month  = ordenarMeses(fechaDeSiguientesVacaciones.getMonth() + 3) 
+    const day  = fechaDeSiguientesVacaciones.getDate()
+    const year  = ordenaraños(fechaDeSiguientesVacaciones.getMonth() + 3,fechaDeSiguientesVacaciones.getFullYear())
+    const newDate = new Date(`${year}-${month}-${day}`)
+    this.fechaDeSiguientesVacaciones = newDate
+    //Salaries
+    this.salarioNeto = calcular.nomina(this.salarioBruto).sueldo_neto    
+    this.salarioAnual = calcular.nomina(this.salarioBruto).sueldoAnual    
+    //Salaries for vacation
+    this.salarioPorVacaciones =  this.salarioBruto * calcular.vacaciones(this.createdAt,this.salarioBruto) / 23.83 
     next();
   });
 

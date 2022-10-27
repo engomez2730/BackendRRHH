@@ -15,6 +15,10 @@ Router
 .patch(employeesController.vacaciones)
 
 Router
+.route('/nomina/:id')
+.patch(employeesController.nomina)
+
+Router
 .route('/:id')
 .get(employeesController.verEmpleado)
 .patch(employeesController.uploadUserPhoto,employeesController.editarEmpleado)

@@ -96,3 +96,37 @@ exports.regalia = (createdAt,salario) =>{
     return regalia
 }
 
+const ISR = (sueldo) => {
+    const sueldoAnual = sueldo * 12
+    return sueldoAnual < 416220.0
+      ? 0
+      : sueldoAnual > 416220.01 && sueldoAnual < 624329.0
+      ? (sueldoAnual - 416220.01) * 0.15
+      : sueldoAnual > 624329.01 && sueldoAnual < 867123.0
+      ? (sueldoAnual - 624329.01) * 0.2 + 31216.0
+      : sueldoAnual > 867123.0 && (sueldoAnual - 867123.01) * 0.25 + 79776.0
+}
+  
+exports.nomina = (sueldo, ahorro = 0) => {
+    const afp = sueldo * 0.0287
+    const sfs = sueldo * 0.0304
+    const isr = ISR(sueldo - sfs - afp)
+    const total_descuento = afp + sfs + isr / 12
+    const sueldo_neto = sueldo - afp - sfs - isr / 12
+    const totalSinAhorro = sueldo - afp - sfs - isr / 12 - ahorro
+    const sueldoAnual = sueldo * 12
+    const sueldoBruto = sueldo
+
+  
+    return {
+      afp,
+      sfs,
+      isr,
+      total_descuento,
+      sueldo_neto,
+      totalSinAhorro,
+      sueldoAnual,
+      sueldoBruto,
+    }
+  }
+  

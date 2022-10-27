@@ -51,10 +51,13 @@ exports.crearEmpleado = catchAsync(async (req,res) =>{
         
     const newEmpleado = await employeeModel.create(req.body)
     const departamentoEscogido = await departamentoModel.findOne({nombre:newEmpleado.departamento})
+
     await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:newEmpleado._id}},{
       new:true,
       runValidators:true
     })
+
+    console.log(departamentoModel)
 
     createSendToken(newEmpleado,201,res,req)
     res.status(201).json({
@@ -68,7 +71,6 @@ exports.signIn = catchAsync(async (req,res,next) =>{
     if(!correo || !password) return next( new AppError('Debe introducir correo y contraseña',401))
     const User = await employeeModel.findOne({correo:correo})
     if(!User || !(await User.correctPassword(password, User.password))){
-        console.log('fff')
         return next(new AppError('Contraseña o correo incorrectos',401)) 
     } 
     req.user = User 
@@ -88,7 +90,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     return next(new AppError('Tienes que estar logueado para ver esto', 401));
   }
 
-  console.log(req.cookies.jwt)
 
 
   // 2) Verification token
