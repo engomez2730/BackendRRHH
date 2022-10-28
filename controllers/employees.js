@@ -37,7 +37,13 @@ const multerFilter = (req, file, cb) => {
 
 exports.verEmpleados = catchAsync( async (req,res) =>{
 
-    const Empleados = await employeeModel.find({})
+    const queryObj = {...req.query}
+    console.log()
+    const excludeFields = ['page','sort','limit','fields']
+    excludeFields.forEach(el => delete queryObj[el])
+    const query = employeeModel.find(queryObj)
+
+    const Empleados = await query;
 
     res.status(201).json({
         status:'Success',
@@ -46,6 +52,9 @@ exports.verEmpleados = catchAsync( async (req,res) =>{
         }
     })
 })
+
+
+
 
 exports.eliminarEmpleados = catchAsync(async (req,res) =>{
     await employeeModel.deleteMany(req.body)

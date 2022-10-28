@@ -3,6 +3,11 @@ const Router = express.Router()
 const permisosController = require('../controllers/permisosController')
 
 Router
+.route('/verempleados')
+.get(permisosController.verPermisosEmpleados)
+
+
+Router
 .route('/')
 .get(permisosController.verPermisos)
 .post(permisosController.crearPermiso)
