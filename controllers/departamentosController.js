@@ -1,4 +1,5 @@
 const departamentoModel = require('../models/departamentosModel')
+const employeesModel = require('../models/employeesModel')
 const AppError = require('../utils/appErrorClass')
 const catchAsync =  require('../utils/catchAsync')
 const factory = require('../utils/factory')
@@ -31,6 +32,18 @@ exports.verDepartamentos = catchAsync(async (req,res) =>{
     })
 })
 
+exports.verDepartamentosEmpleados = catchAsync(async (req,res) =>{
+    const Departamentos = await employeesModel.find( { $text: { $search: "\"enderson\"" } } )
+
+    res.status(201).json({
+        status:'Success',
+        cantidadDeDepartamentos:Departamentos.length,
+        data:{
+            Departamentos
+        }
+    })
+})
+
 exports.eliminarDepartamentos = catchAsync(async (req,res) =>{
     await departamentoModel.deleteMany()
    
@@ -40,11 +53,13 @@ exports.eliminarDepartamentos = catchAsync(async (req,res) =>{
 })
 
 
-exports.verDepartamento = catchAsync(async (req,res) =>{
+exports.verDepartamento = catchAsync(async (req,res,next) =>{
     const Departamentos = await departamentoModel.findById(req.params.id).populate({
         path:'Empleados',
         select:'-__v'
     })
+
+    if(!Departamentos) return next(new AppError('No hay Departamento con este ID',404))
    
     res.status(201).json({
         status:'Success',

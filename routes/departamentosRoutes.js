@@ -10,6 +10,11 @@ Router
 .delete(departamentosController.eliminarDepartamentos)
 
 Router
+.route('/empleados')
+.get(departamentosController.verDepartamentosEmpleados)
+
+
+Router
 .route('/:id')
 .get(departamentosController.verDepartamento)
 .patch(departamentosController.editarDepartamento)

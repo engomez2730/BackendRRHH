@@ -35,11 +35,16 @@ exports.uploadUserPhoto = upload.single('doc');
 //Long Controllers 
 exports.createSolicitante = catchAsync(async (req,res,next) =>{
     let filterObject = {...req.body}
+    console.log(req.files)
     if(req.file){
         filterObject.doc = req.file.filename
     }
-    const createSolicitante = await solicitantesModel.create(filterObject)
     const vacante = await vacantesModel.findById(req.params.id)
+    if(!vacante){
+      return next(new AppError('No existe esta vacante',404))
+    } 
+    const createSolicitante = await solicitantesModel.create(filterObject)
+
      await vacantesModel.updateOne(
         {_id:vacante._id},
         {$push:{Solicitantes:createSolicitante._id}}
@@ -60,11 +65,13 @@ exports.borrarSolicitantes = catchAsync(async (req,res,next) =>{
     })
 }) 
 exports.editarSolicitante = catchAsync(async (req,res,next)=>{
+    console.log(req.body)
     let filterOBject = {...req.body}
     if(req.file){
         filterOBject.doc = req.file.filename
     }
-    const doc = await vacantesModel.findByIdAndUpdate(req.params.id, filterOBject, {
+
+    const doc = await solicitantesModel.findByIdAndUpdate(req.params.id, filterOBject, {
         new: true,
         runValidators: true
     });

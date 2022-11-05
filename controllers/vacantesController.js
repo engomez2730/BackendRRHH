@@ -42,6 +42,11 @@ exports.verVacante = catchAsync(async (req,res,next) =>{
   
   const Vacantes = await vacantesModel.findById(req.params.id).populate({path:'Solicitantes'})
 
+  
+  if (!Vacantes) {
+    return next(new AppError('No existe vacante con este ID', 404));
+  }
+
   res.status(201).json({
       status:'Success',
       data:{
@@ -50,6 +55,7 @@ exports.verVacante = catchAsync(async (req,res,next) =>{
   })
 })
 exports.editarVacante = catchAsync(async (req,res,next)=>{
+
 
     let filterOBject = {...req.body}
     if(req.file){

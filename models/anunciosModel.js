@@ -4,17 +4,19 @@ const anuncioSchema = new mongoose.Schema({
 
     titulo:{
         type:String,
-        required:[true,'Un empleado debe tener un titulo'],
+        required:[true,'Un Anuncio debe tener un titulo'],
     },
     descripcion:{
         type:String,
-        required:[true,'Un empleado debe tener un nombre'],
+        required:[true,'Un Anuncio debe tener un descripcion'],
     },
     createdAt:{
         type:Date,
         default: new Date()
     },
-
+    departamentos:{
+        type:Array,
+    },
     finishAt:{
         type:Date,
     },

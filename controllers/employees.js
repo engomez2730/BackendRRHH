@@ -36,24 +36,23 @@ const multerFilter = (req, file, cb) => {
 
 
 exports.verEmpleados = catchAsync( async (req,res) =>{
-
     const queryObj = {...req.query}
-    console.log()
     const excludeFields = ['page','sort','limit','fields']
     excludeFields.forEach(el => delete queryObj[el])
     const query = employeeModel.find(queryObj)
+    const empleadosTotales = employeeModel.find({})
 
     const Empleados = await query;
 
     res.status(201).json({
         status:'Success',
         empleados:{
-          Empleados
+          Empleados,
+          EmpleadosTotales:empleadosTotales.length,
+          EmpleadosInactivos:empleadosTotales.length - Empleados.length
         }
     })
 })
-
-
 
 
 exports.eliminarEmpleados = catchAsync(async (req,res) =>{
@@ -104,7 +103,17 @@ exports.editarEmpleado =catchAsync(async (req,res,next) =>{
         }
       });
 })
-exports.eliminarEmpleado = factory.deleteOne(employeeModel)
+exports.eliminarEmpleado = catchAsync(async (req,res,next) =>{
+
+  const empleadoEliminado = await employeeModel.findByIdAndUpdate(req.params.id,
+      {estado:false}
+  )
+
+  res.status(200).json({
+    status: 'success',
+    empleadoEliminado
+  });
+})
 
 exports.ponerAusencia = catchAsync(async (req,res,next) =>{
     const empleadoAusenciaUpdateds = await employeeModel.findById(req.params.id)
