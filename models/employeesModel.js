@@ -75,7 +75,14 @@ const employeesSchema = new mongoose.Schema({
         enum:['definido','indefinido','temporal'],
     },
     puesto:{
-        type:String
+        type:String,
+        enum:['Gerente General','Encargado Recursos Humanos','Asistente Recursos Humanos','Encargado Contabilidad',
+        'Asistente Contabilidad','Encargada Commercial','Conserje','Seguridad','Ingeniero Civil','Ingeniero Industrial',
+      'Supervisor','Capataz','HCE','Encargado Seguridad Barrick','Chofer','Operador','Mecanico Categoria1','Mecanico Categoria 2',
+      'Mecanico Categoria 3','Mecanico Categoria 4','Soldador','Gomero','Listero','Vigia','Topografo','Arquitecto',
+      'Jardinero','Encargado de Compras','Encargado de Equipos','Encargado de Almacen','Labador','Vigilante','Encargado Despacho',
+      'Encargado Planta Agregado','Operador Planta','Encargado Taller','Otro'
+  ]
     },
     vacacionesTomadas:{
         type:Boolean,

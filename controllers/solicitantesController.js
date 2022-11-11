@@ -86,7 +86,7 @@ exports.editarSolicitante = catchAsync(async (req,res,next)=>{
       });
 })
 exports.nuevoSolicitante = catchAsync(async (req,res,next) =>{
-   
+        console.log(req.body)
        const filterOBject = {...req.body}
        if(req.file){
          filterOBject.curriculum = req.file.name || 'no tengo'
@@ -109,4 +109,16 @@ exports.nuevoSolicitante = catchAsync(async (req,res,next) =>{
 //Short Controllers
 exports.verSolicitante = factory.getOne(solicitantesModel)
 exports.eliminarSolicitantes = factory.deleteOne(solicitantesModel)
-exports.verSolicitantes = factory.getAll(solicitantesModel)
+
+exports.verSolicitantes =  catchAsync(async (req,res,next) =>{
+  const queryObj = {...req.query}
+    const excludeFields = ['page','sort','limit','fields']
+    excludeFields.forEach(el => delete queryObj[el])
+    const query = solicitantesModel.find(queryObj)
+    const Solicitante = await query;
+
+    res.status(201).json({
+        status:'Success',
+        Solicitante
+    })
+})

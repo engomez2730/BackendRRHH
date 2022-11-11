@@ -50,21 +50,21 @@ const personasEntrevistadas = new mongoose.Schema({
     puestoAplicado:{
         type:String,
         required:[true,'Un empleado debe tener un puesto'],
-        enum:['GerenteGeneral','EncargadoRecursosHumanos','AsistenteRecursosHumanos','EncargadoContabilidad',
-              'AsistenteContabilidad','EncargadaCommercial','Conserje','Seguridad','IngenieroCivil','IngenieroIndustrial',
-            'Supervisor','Capataz','HCE','EncargadoSeguridadBarrick','Chofer','Operador','MecanicoCategoria1','MecanicoCategoria2',
-            'MecanicoCategoria3','MecanicoCategoria4','Soldador','Gomero','Listero','Vigia','Topografo','Arquitecto',
-            'Jardinero','Encargado de Compras','Encargado de Equipos','Encargado de Almacen','Labador','Vigilante','EncargadoDespacho',
-            'EncargadoPlantaAgregado','Operador Planta','Encargado Taller'
+        enum:['Gerente General','Encargado Recursos Humanos','Asistente Recursos Humanos','Encargado Contabilidad',
+              'Asistente Contabilidad','Encargada Commercial','Conserje','Seguridad','Ingeniero Civil','Ingeniero Industrial',
+            'Supervisor','Capataz','HCE','Encargado Seguridad Barrick','Chofer','Operador','Mecanico Categoria1','Mecanico Categoria 2',
+            'Mecanico Categoria 3','Mecanico Categoria 4','Soldador','Gomero','Listero','Vigia','Topografo','Arquitecto',
+            'Jardinero','Encargado de Compras','Encargado de Equipos','Encargado de Almacen','Labador','Vigilante','Encargado Despacho',
+            'Encargado Planta Agregado','Operador Planta','Encargado Taller','Otro','Mecanico'
         ]
+    },
+    estadoLaboral:{
+        type:String,
+        enum:['contratado','en espera','no calificado']
     },
     createdAt:{
         type:Date,
         default: moment().format()  
-    },
-    candidatoElegible:{
-        type:Boolean,
-        default:false
     },
     estado:{
         type:Boolean,

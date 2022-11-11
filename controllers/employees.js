@@ -40,16 +40,19 @@ exports.verEmpleados = catchAsync( async (req,res) =>{
     const excludeFields = ['page','sort','limit','fields']
     excludeFields.forEach(el => delete queryObj[el])
     const query = employeeModel.find(queryObj)
-    const empleadosTotales = employeeModel.find({})
-
     const Empleados = await query;
+    const empleadosTotales = await employeeModel.find({})
+    const empleadosInactivos = await employeeModel.find({estado:false})
+   
+
+
 
     res.status(201).json({
         status:'Success',
         empleados:{
           Empleados,
           EmpleadosTotales:empleadosTotales.length,
-          EmpleadosInactivos:empleadosTotales.length - Empleados.length
+          EmpleadosInactivos:empleadosInactivos.length
         }
     })
 })
@@ -63,8 +66,9 @@ exports.eliminarEmpleados = catchAsync(async (req,res) =>{
 })
 
 exports.verEmpleado = factory.getOne(employeeModel)
-exports.editarEmpleado =catchAsync(async (req,res,next) =>{
 
+exports.editarEmpleado =catchAsync(async (req,res,next) =>{
+    console.log(req.body)
     let filterOBject = {...req.body}
     if(req.file){
         filterOBject.photo = req.file.filename
@@ -72,7 +76,8 @@ exports.editarEmpleado =catchAsync(async (req,res,next) =>{
     
     if(req.body.departamento){
       const departamentoEscogido = await departamentoModel.findOne({nombre:req.body.departamento})
-      const usuario = await employeeModel.findById(req.body.id)
+      if(!departamentoEscogido) return next(new AppError('No existe departamento con este nombre',401))
+      const usuario = await employeeModel.findById(req.params.id)
       const departamentoChange = await departamentoModel.findOne({nombre:usuario.departamento})
 
       await departamentoModel.updateOne({_id:departamentoChange._id},{$pull:{Empleados:usuario._id}},{
@@ -86,16 +91,19 @@ exports.editarEmpleado =catchAsync(async (req,res,next) =>{
     })
     }
 
-    
+    console.log(filterOBject)
 
     const doc = await employeeModel.findByIdAndUpdate(req.params.id, filterOBject, {
         new: true,
         runValidators: true
     });
+
+    console.log()
   
       if (!doc) {
         return next(new AppError('No se encontro ID con este Usuario', 404));
       }
+
       res.status(200).json({
         status: 'success',
         data: {

@@ -4,7 +4,6 @@ const solicitantesSchema = new mongoose.Schema({
     nombre:{
         type:String,
         required:[true,'Un Solicitante debe tener un nombre'],
-
     },
     apellido:{
         type:String,
@@ -19,13 +18,15 @@ const solicitantesSchema = new mongoose.Schema({
         type:Number,
         required:[true,'Un Solicitante debe tener una telefono'],
         unique:[true,'El numero de telefono del empleado existe en la base de datos']
-
     },
     correo:{
         type:String,
         required:[true,'Un Solicitante debe tener una correo'],
     },
     curiculum:{
+        type:String
+    },
+    puesto:{
         type:String
     },
     createdAt:{
