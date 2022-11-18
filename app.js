@@ -15,6 +15,7 @@ const anunciosRoute = require('./routes/anunciosRoutes.js')
 const entrevistados = require('./routes/entrevistadosRoute.js')
 const vacantes = require('./routes/vacantesRoutes.js')
 const solicitantes = require('./routes/solicitanteRoutes.js')
+const despidos = require('./routes/despidosRoutes.js')
 const permisos = require('./routes/permisosRoute.js')
 const rootRoute = require('./routes/rootRoute')
 
@@ -42,6 +43,7 @@ app.use('/api/v1/entrevistados',entrevistados)
 app.use('/api/v1/vacantes',vacantes)
 app.use('/api/v1/solicitantes',solicitantes)
 app.use('/api/v1/permisos',permisos)
+app.use('/api/v1/despidos',despidos)
 
 app.all('*',(req,res,next) =>{
    return next(new AppError(`La ruta ${req.originalUrl} no existe ☹`,404))

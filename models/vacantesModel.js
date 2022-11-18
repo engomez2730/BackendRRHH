@@ -10,7 +10,7 @@ const vacantesSchema = new mongoose.Schema({
         type:String,
         required:[true,'Una vacante debe tener un numero de trabajdores']
     },
-    departamento:{
+    horario:{
         type:String
     },
     puesto:{
@@ -21,7 +21,7 @@ const vacantesSchema = new mongoose.Schema({
         type:String,
         required:[true,'Una vacante debe tener una descripcion']
     },
-    curriculum:{
+    razonApertura:{
         type:String
     },
     Solicitantes:[

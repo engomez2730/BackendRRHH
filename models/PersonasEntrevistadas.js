@@ -32,6 +32,15 @@ const personasEntrevistadas = new mongoose.Schema({
         required:[true,'Un empleado debe tener una correo'],
 
     },
+    sexo:{
+        type:String,
+        required:[true,'Un empleado debe tener este campo'],
+        enum:['Hombre','Mujer','Otro']
+    },
+    fechaDeNacimiento:{
+        type:Date,
+        require:[true,'necesita una edad']
+    },
     provincia:{
         type:String,
         required:[true,'Un empleado debe tener una provincia'],
@@ -60,7 +69,7 @@ const personasEntrevistadas = new mongoose.Schema({
     },
     estadoLaboral:{
         type:String,
-        enum:['contratado','en espera','no calificado']
+        enum:['Contratado','En Espera','No Calificado','Por Entrevistar','Otro']
     },
     createdAt:{
         type:Date,

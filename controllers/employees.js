@@ -2,7 +2,7 @@ const employeeModel = require('../models/employeesModel')
 const AppError = require('../utils/appErrorClass')
 const catchAsync =  require('../utils/catchAsync')
 const departamentoModel = require('../models/departamentosModel')
-
+const despidosModel = require('../models/despidosModel')
 const factory = require('../utils/factory')
 const multer = require('multer');
 const sharp = require('sharp');
@@ -44,9 +44,6 @@ exports.verEmpleados = catchAsync( async (req,res) =>{
     const empleadosTotales = await employeeModel.find({})
     const empleadosInactivos = await employeeModel.find({estado:false})
    
-
-
-
     res.status(201).json({
         status:'Success',
         empleados:{
@@ -153,3 +150,16 @@ exports.nomina = catchAsync(async (req,res,next) =>{
 /*     empleadoEditarNomina
  */})})
 
+ exports.despedirEmpleado = catchAsync(async (req,res) =>{
+  const usuario = await employeeModel.findByIdAndUpdate(req.params.id,{estado:false})
+  const despido = await despidosModel.create(req.body)
+  await despidosModel.updateOne({_id:despido._id},{$push:{Usuario:usuario._id}},{
+    new:true,
+    runValidators:true
+  })
+
+  res.status(201).json({
+      status:'Success',
+      despido
+  })
+})

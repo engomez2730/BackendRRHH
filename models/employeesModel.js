@@ -65,6 +65,10 @@ const employeesSchema = new mongoose.Schema({
         minlength:8
 
     },
+    tipoDeNomina:{
+        type:String,
+        required:[true,'Un empleado debe tener este campo'],
+    },
     estado:{
         type:Boolean,
         default:true

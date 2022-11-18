@@ -11,6 +11,11 @@ Router
 .delete(employeesController.eliminarEmpleados)
 
 Router
+.route('/despidos/:id')
+.patch(employeesController.despedirEmpleado)
+
+
+Router
 .route('/vacaciones/:id')
 .patch(employeesController.vacaciones)
 
@@ -28,6 +33,8 @@ Router
 .route('/ausencias/:id')
 .patch(employeesController.ponerAusencia)
 .delete(employeesController.eliminarEmpleado)
+
+
 
 
 

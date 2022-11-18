@@ -53,8 +53,7 @@ exports.crearEmpleado = catchAsync(async (req,res,next) =>{
     if(!departamentoEscogido) return next(new AppError(`No existe departamento ${req.body.departamento}`,401))
     const newEmpleado = await employeeModel.create(req.body)
 
-    
-
+  
     await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:newEmpleado._id}},{
       new:true,
       runValidators:true
