@@ -39,7 +39,9 @@ exports.verEmpleados = catchAsync( async (req,res) =>{
     const queryObj = {...req.query}
     const excludeFields = ['page','sort','limit','fields']
     excludeFields.forEach(el => delete queryObj[el])
-    const query = employeeModel.find(queryObj)
+    const query = employeeModel.find(queryObj).populate({
+      path:'Nominas'
+  })
     const Empleados = await query;
     const empleadosTotales = await employeeModel.find({})
     const empleadosInactivos = await employeeModel.find({estado:false})
@@ -62,7 +64,19 @@ exports.eliminarEmpleados = catchAsync(async (req,res) =>{
     })
 })
 
-exports.verEmpleado = factory.getOne(employeeModel)
+exports.verEmpleado = catchAsync(async (req,res,next) =>{
+
+  const doc = await employeeModel.findById(req.params.id).populate({
+    path:'Nominas'
+  })
+  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      data: doc
+    }
+  });
+})
 
 exports.editarEmpleado =catchAsync(async (req,res,next) =>{
     console.log(req.body)

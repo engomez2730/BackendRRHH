@@ -1,10 +1,11 @@
 const employeeModel = require('../models/employeesModel')
 const departamentoModel = require('../models/departamentosModel')
-
+const nominaModel = require('../models/nominaModel')
 const AppError = require('../utils/appErrorClass')
 const catchAsync =  require('../utils/catchAsync')
 const jwt = require('jsonwebtoken')
 const { promisify } = require('util');
+const calcularNomina = require('../utils/calcularVacaciones')
 
 
 const signToken = id => {
@@ -48,18 +49,17 @@ exports.crearEmpleado = catchAsync(async (req,res,next) =>{
 
     req.body.cedula = Number(req.body.cedula)
     req.body.celular = Number(req.body.celular)
-        
+    //Departamentos
     const departamentoEscogido = await departamentoModel.findOne({nombre:req.body.departamento})
     if(!departamentoEscogido) return next(new AppError(`No existe departamento ${req.body.departamento}`,401))
+    //Empleado
     const newEmpleado = await employeeModel.create(req.body)
 
-  
     await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:newEmpleado._id}},{
       new:true,
       runValidators:true
     })
 
-    console.log(departamentoModel)
 
     createSendToken(newEmpleado,201,res,req)
     res.status(201).json({

@@ -17,7 +17,9 @@ const vacantes = require('./routes/vacantesRoutes.js')
 const solicitantes = require('./routes/solicitanteRoutes.js')
 const despidos = require('./routes/despidosRoutes.js')
 const permisos = require('./routes/permisosRoute.js')
+const nomina = require('./routes/nominaRoutes')
 const rootRoute = require('./routes/rootRoute')
+
 
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.json({ limit: '20kb' }));
@@ -44,6 +46,7 @@ app.use('/api/v1/vacantes',vacantes)
 app.use('/api/v1/solicitantes',solicitantes)
 app.use('/api/v1/permisos',permisos)
 app.use('/api/v1/despidos',despidos)
+app.use('/api/v1/nomina',nomina)
 
 app.all('*',(req,res,next) =>{
    return next(new AppError(`La ruta ${req.originalUrl} no existe ☹`,404))

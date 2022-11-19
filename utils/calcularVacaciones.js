@@ -111,8 +111,8 @@ exports.nomina = (sueldo, ahorro = 0) => {
     const afp = sueldo * 0.0287
     const sfs = sueldo * 0.0304
     const isr = ISR(sueldo - sfs - afp)
-    const total_descuento = afp + sfs + isr / 12
-    const sueldo_neto = sueldo - afp - sfs - isr / 12
+    const totalDescuento = afp + sfs + isr / 12
+    const sueldoNeto = sueldo - afp - sfs - isr / 12
     const totalSinAhorro = sueldo - afp - sfs - isr / 12 - ahorro
     const sueldoAnual = sueldo * 12
     const sueldoBruto = sueldo
@@ -122,8 +122,8 @@ exports.nomina = (sueldo, ahorro = 0) => {
       afp,
       sfs,
       isr,
-      total_descuento,
-      sueldo_neto,
+      totalDescuento,
+      sueldoNeto,
       totalSinAhorro,
       sueldoAnual,
       sueldoBruto,

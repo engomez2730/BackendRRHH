@@ -148,7 +148,13 @@ const employeesSchema = new mongoose.Schema({
     fechaDeSiguientesVacaciones:{
         type:Date,
         default:null
-    }
+    },
+    Nominas:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Nomina'
+        }
+    ],
 },
 {
     toJSON: { virtuals: true },
