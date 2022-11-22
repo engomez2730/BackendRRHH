@@ -9,10 +9,11 @@ Router
 .get(nominaController.verNominas)
 .post(nominaController.crearNomina)
 .delete(nominaController.eliminarNominas)
-/* 
+
 Router
-.route('/despidos/:id')
-.patch(employeesController.despedirEmpleado) */
+.route('/:id')
+.patch(nominaController.editarNomina)
+.get(nominaController.verNomina)
 
 
 

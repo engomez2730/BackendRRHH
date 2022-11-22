@@ -43,7 +43,6 @@ const employeesSchema = new mongoose.Schema({
         'Monseñor Nouel','Monte Cristi','Monte Plata','Pedernales','Peravia','Puerto Plata',
         'Samana','Sanchez Ramirez','San Cristobal','San Jose de Ocoa','San Juan','San Pedro de Macoris',
         'Santiago','Santiago Rodriguez','Santo Domingo','Valverde'],
-        default: 'Monseñor Nouel'
     },
     pais:{
         type:String,
@@ -149,6 +148,10 @@ const employeesSchema = new mongoose.Schema({
         type:Date,
         default:null
     },
+    costoPorHora:{
+        type:Number,
+        default:null
+    },
     Nominas:[
         {
             type:mongoose.Schema.ObjectId,
@@ -182,10 +185,6 @@ employeesSchema.virtual('regalia').get(function() {
 });
 employeesSchema.virtual('vacacionesDisponibles').get(function() {
     return calcular.vacacionesDisponibles(this.createdAt)
-});
-
-employeesSchema.virtual('PrestacionesLaborales').get(function() {
-    return this.PrestacionesLaborales = calcular.calcularPrestaciones(this.createdAt,this.salarioBruto,this.vacacionesTomadas,this.salarioPorVacaciones,this.regalia)
 });
 
 
@@ -240,10 +239,7 @@ employeesSchema.pre('save', async function(next) {
     const day  = fechaDeSiguientesVacaciones.getDate()
     const year  = ordenaraños(fechaDeSiguientesVacaciones.getMonth() + 3,fechaDeSiguientesVacaciones.getFullYear())
     const newDate = new Date(`${year}-${month}-${day}`)
-    this.fechaDeSiguientesVacaciones = newDate
-    //Salaries
-    this.salarioNeto = calcular.nomina(this.salarioBruto).sueldo_neto    
-    this.salarioAnual = calcular.nomina(this.salarioBruto).sueldoAnual    
+    this.fechaDeSiguientesVacaciones = newDate    
     //Salaries for vacation
     this.salarioPorVacaciones =  this.salarioBruto * calcular.vacaciones(this.createdAt,this.salarioBruto) / 23.83 
     next();

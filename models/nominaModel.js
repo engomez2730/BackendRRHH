@@ -5,7 +5,7 @@ moment.locale('es')
 
 const nominaSchema = new mongoose.Schema({
 
-    tipoNomina:{
+    tipoDeNomina:{
         type:String,
         default:'Nomina Fija',
         required:[true,'Un empleado debe tener tipo de nomina'],
@@ -15,37 +15,45 @@ const nominaSchema = new mongoose.Schema({
         type:Number,
         default:null
     },
+    nombreNomina:{
+        type:String,
+        unique:[true,'La Fecha de la nomina esta repetida']
+    },
+    horasMensualesTrabajadas:{
+        type:Number,
+    },
+    horasDobles:{
+        type:Number,
+    },
+    horasExtras:{
+        type:Number,
+    },
     sueldoBruto:{
         type:Number,
-        required:[true,'Un empleado debe tener un sueldo Bruto'],
     },
     sueldoNeto:{
         type:Number,
-        required:[true,'Un empleado debe tener un sueldo Neto'],
     },
     sueldoAnual:{
         type:Number,
-        required:[true,'Un empleado debe tener un sueldo Anual'],
     },
     afp:{
         type:Number,
-        required:[true,'Un empleado debe tener un afp'],
     },
     sfs:{
         type:Number,
-        required:[true,'Un empleado debe tener un sfs'],
     },
     isr:{
         type:Number,
-        required:[true,'Un empleado debe tener un isr'],
     },
     totalDescuento:{
         type:Number,
-        required:[true,'Un empleado debe tener un Total Descuento'],
     },
     totalSinAhorro:{
         type:Number,
-        required:[true,'Un empleado debe tener un Total Sin Ahorro'],
+    },
+    mes:{
+        type:String,
     },
     estado:{
         type:Boolean,
@@ -66,6 +74,15 @@ const nominaSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 })
 
+var mes= ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre" ,"Octubre", "Noviembre" ,"Diciembre"];
+
+nominaSchema.pre('save', async function(next) {
+        console.log(this.year = new Date(this.createdAt).getFullYear())
+        this.year = new Date(this.createdAt).getFullYear()
+        this.mes = mes[new Date(this.createdAt).getMonth()]
+        this.nombreNomina = `${this.mes} ${this.year}`
+        next()
+})
 
 
 const nominaModel = new mongoose.model('Nomina',nominaSchema)
