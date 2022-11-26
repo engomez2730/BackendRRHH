@@ -101,23 +101,44 @@ const ISR = (sueldo) => {
     return sueldoAnual < 416220.0
       ? 0
       : sueldoAnual > 416220.01 && sueldoAnual < 624329.0
-      ? (sueldoAnual - 416220.01) * 0.15
+      ? ((sueldoAnual - 416220.01) * 0.15 )/ 12
       : sueldoAnual > 624329.01 && sueldoAnual < 867123.0
-      ? (sueldoAnual - 624329.01) * 0.2 + 31216.0
-      : sueldoAnual > 867123.0 && (sueldoAnual - 867123.01) * 0.25 + 79776.0
+      ? ((sueldoAnual - 416220.01) * 0.20 )/ 12
+      : sueldoAnual > 867123.0 && ((sueldoAnual - 416220.01) * 0.25 )/ 12
 }
   
-exports.nomina = (sueldo, ahorro = 0) => {
+exports.nomina = (sueldo,sueldoPorHora,tipoNomina, ahorro = 0) => {
+
+    if(tipoNomina === 'Por Hora'){
+        const afp = sueldo * 0.0287
+        const sfs = sueldo * 0.0304
+        const isr = ISR(sueldo - sfs - afp)
+        const totalDescuento = afp + sfs + isr 
+        const sueldoNeto = sueldoPorHora - afp - sfs - isr 
+        const totalSinAhorro = sueldo - afp - sfs - isr / 12 - ahorro
+        const sueldoAnual = sueldo * 12
+        const sueldoBruto = sueldo
+        return {
+          afp,
+          sfs,
+          isr,
+          totalDescuento,
+          sueldoNeto,
+          totalSinAhorro,
+          sueldoAnual,
+          sueldoBruto,
+        }
+
+    }
+
     const afp = sueldo * 0.0287
     const sfs = sueldo * 0.0304
     const isr = ISR(sueldo - sfs - afp)
-    const totalDescuento = afp + sfs + isr / 12
-    const sueldoNeto = sueldo - afp - sfs - isr / 12
+    const totalDescuento = afp + sfs + isr 
+    const sueldoNeto = sueldo - afp - sfs - isr 
     const totalSinAhorro = sueldo - afp - sfs - isr / 12 - ahorro
     const sueldoAnual = sueldo * 12
     const sueldoBruto = sueldo
-
-  
     return {
       afp,
       sfs,
@@ -128,5 +149,4 @@ exports.nomina = (sueldo, ahorro = 0) => {
       sueldoAnual,
       sueldoBruto,
     }
-  }
-  
+}

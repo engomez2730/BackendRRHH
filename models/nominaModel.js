@@ -17,7 +17,6 @@ const nominaSchema = new mongoose.Schema({
     },
     nombreNomina:{
         type:String,
-        unique:[true,'La Fecha de la nomina esta repetida']
     },
     horasMensualesTrabajadas:{
         type:Number,
@@ -30,12 +29,16 @@ const nominaSchema = new mongoose.Schema({
     },
     sueldoBruto:{
         type:Number,
+        default:0
     },
     sueldoNeto:{
         type:Number,
+        default:0
+
     },
     sueldoAnual:{
         type:Number,
+        default:0
     },
     afp:{
         type:Number,
@@ -52,8 +55,17 @@ const nominaSchema = new mongoose.Schema({
     totalSinAhorro:{
         type:Number,
     },
+    descuentos:{
+        type:Number,
+    },
+    bonus:{
+        type:Number,
+    },
     mes:{
         type:String,
+    },
+    year:{
+        type:Number
     },
     estado:{
         type:Boolean,
@@ -77,10 +89,10 @@ const nominaSchema = new mongoose.Schema({
 var mes= ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre" ,"Octubre", "Noviembre" ,"Diciembre"];
 
 nominaSchema.pre('save', async function(next) {
-        console.log(this.year = new Date(this.createdAt).getFullYear())
-        this.year = new Date(this.createdAt).getFullYear()
-        this.mes = mes[new Date(this.createdAt).getMonth()]
-        this.nombreNomina = `${this.mes} ${this.year}`
+        this.sueldoNeto = this.sueldoNeto + this.bonus - this.descuentos
+        this.totalDescuento =  this.totalDescuento + this.descuentos
+        this.year = Number(this.nombreNomina.split(' ')[1])
+        this.mes = this.nombreNomina.split(' ')[0]
         next()
 })
 
