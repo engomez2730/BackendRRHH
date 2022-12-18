@@ -6,6 +6,7 @@ const catchAsync =  require('../utils/catchAsync')
 const jwt = require('jsonwebtoken')
 const { promisify } = require('util');
 const calcularNomina = require('../utils/calcularVacaciones')
+const personasEntrevistadas = require('../models/PersonasEntrevistadas')
 
 
 const signToken = id => {
@@ -60,6 +61,9 @@ exports.crearEmpleado = catchAsync(async (req,res,next) =>{
       runValidators:true
     })
 
+    const personasEntrevistadasDocument = await personasEntrevistadas.deleteOne({cedula:req.body.cedula})
+    console.log(personasEntrevistadasDocument)
+
 
     createSendToken(newEmpleado,201,res,req)
     res.status(201).json({
@@ -75,6 +79,9 @@ exports.signIn = catchAsync(async (req,res,next) =>{
     if(!User || !(await User.correctPassword(password, User.password))){
         return next(new AppError('Contraseña o correo incorrectos',401)) 
     } 
+
+    if(User.estado === false)next( new AppError('Este usuario no esta activo en la empresa',403))
+
     req.user = User 
     createSendToken(User,201,res,req)
 

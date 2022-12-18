@@ -14,8 +14,8 @@ const multerStorage = multer.diskStorage({
      cb(null, 'public/photos');
    },
    filename: (req, file, cb) => {
-     const ext = file.mimetype.split('/')[1];
-     cb(null, `${req.user.id}-${Date.now()}.${ext}`);
+     const ext = file.mimetype?.split('/')[1] || 'jpg';
+     cb(null, `${'req.user.id'}-${Date.now()}.${ext}`);
    }
 });
 
@@ -41,7 +41,11 @@ exports.verEmpleados = catchAsync( async (req,res) =>{
     excludeFields.forEach(el => delete queryObj[el])
     const query = employeeModel.find(queryObj).populate({
       path:'Nominas'
-  })
+    }).populate({
+      path:'Vacaciones'
+    }).populate({
+      path:'Epps'
+    })
     const Empleados = await query;
     const empleadosTotales = await employeeModel.find({})
     const empleadosInactivos = await employeeModel.find({estado:false})
@@ -68,6 +72,10 @@ exports.verEmpleado = catchAsync(async (req,res,next) =>{
 
   const doc = await employeeModel.findById(req.params.id).populate({
     path:'Nominas'
+  }).populate({
+    path:'Vacaciones'
+  }).populate({
+    path:'Epps'
   })
   
   res.status(200).json({
@@ -79,7 +87,6 @@ exports.verEmpleado = catchAsync(async (req,res,next) =>{
 })
 
 exports.editarEmpleado =catchAsync(async (req,res,next) =>{
-    console.log(req.body)
     let filterOBject = {...req.body}
     if(req.file){
         filterOBject.photo = req.file.filename
@@ -101,15 +108,10 @@ exports.editarEmpleado =catchAsync(async (req,res,next) =>{
         runValidators:true
     })
     }
-
-    console.log(filterOBject)
-
     const doc = await employeeModel.findByIdAndUpdate(req.params.id, filterOBject, {
         new: true,
         runValidators: true
     });
-
-    console.log()
   
       if (!doc) {
         return next(new AppError('No se encontro ID con este Usuario', 404));
@@ -154,7 +156,6 @@ exports.vacaciones = catchAsync(async (req,res,next) =>{
 
 exports.nomina = catchAsync(async (req,res,next) =>{
   const empleadoEditarVacaciones = await employeeModel.findById(req.params.id)
-  console.log(req.body)
   empleadoEditarVacaciones.salarioBruto = req.body.salarioBruto
   empleadoEditarVacaciones.save({ validateBeforeSave: false })
 
@@ -177,3 +178,27 @@ exports.nomina = catchAsync(async (req,res,next) =>{
       despido
   })
 })
+
+
+exports.getEmpleadosStats = catchAsync(async (req, res, next) => {
+  const query = req.query.busqueda || ''
+  console.log(query)
+  
+  const stats = await employeeModel.aggregate([
+    {
+      $group: {
+        _id: { $toUpper: `$${query}` },
+        numEmpleados: { $sum: 1 },
+        avgSalario: { $avg: '$sueldoFijo' },
+        salarioMenor: { $min: '$sueldoFijo' },
+        salarioMayor: { $max: '$sueldoFijo' },
+        totalNomina: { $sum: '$sueldoNeto' }
+      }
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'success',
+    stats
+  });
+});

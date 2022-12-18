@@ -27,18 +27,19 @@ const nominaCompletaSchema = new mongoose.Schema({
     },
     estado:{
         type:String,
-        enum:['Pendiente','En Proceso','Completa','Autorizada'],
+        enum:['Pendiente','Completa','Autorizada'],
         default:'Pendiente'
     },
     createdAt:{
         type:Date,
         default: Date.now()
     },
-    Nominas:{
-        type:mongoose.Schema.ObjectId,
-         ref:'Nominas'
-    }
-    ,
+    Nominas:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Nomina'
+        }
+    ]
 },
 {
     toJSON: { virtuals: true },

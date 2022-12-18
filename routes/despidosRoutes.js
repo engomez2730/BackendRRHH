@@ -8,7 +8,13 @@ Router
 .delete(despidosController.eliminarDespidos)
 
 Router
+.route('/desvincular/:id')
+.post(despidosController.desvincular,despidosController.nominaDesvinculo)
+
+
+Router
 .route('/:id')
+.post(despidosController.crearDespido,despidosController.nominaDespido)
 .get(despidosController.verDespido)
 /* .patch(despidosController.actualizarAnuncio)
 .delete(despidosController.eliminarAnuncio) */

@@ -11,6 +11,11 @@ Router
 .delete(nominaController.eliminarNominas)
 
 Router
+.route('/stats')
+.get(nominaController.getNominaStats)
+
+
+Router
 .route('/:id')
 .patch(nominaController.editarNomina)
 .get(nominaController.verNomina)

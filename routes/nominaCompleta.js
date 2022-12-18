@@ -10,10 +10,16 @@ Router
 .post(nominaCompletaController.crearNominaCompleta)
 .delete(nominaCompletaController.eliminarNominaCompleta)
 
+Router
+.route('/stats')
+.get(nominaCompletaController.getNominaStats)
+
+
 
 Router
 .route('/:id')
 .get(nominaCompletaController.verNominaCompletaOne)
+.patch(nominaCompletaController.actualizarNomincaCompleta)
 
 
 

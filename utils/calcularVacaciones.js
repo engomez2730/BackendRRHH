@@ -17,6 +17,7 @@ exports.calcularPrestaciones = (createdAt,salario,tomoVacaciones,salarioVacacion
     let preaviso = null;
     let cesantia = null;
 
+
    if(meses < 3){
         return'No tiene derechos a prestaciones laborables aun'
    }else if (meses >= 3 && meses <6){
@@ -46,40 +47,36 @@ exports.calcularPrestaciones = (createdAt,salario,tomoVacaciones,salarioVacacion
     }
 }
 
-exports.vacacionesDisponibles = (createdAt) =>{
-   if(calculateMonths(new Date(),createdAt) >= 3){
-        return true
-    }else{
-        return false
-   }
+exports.sueldoVacaciones = (sueldo,dias) =>{
+    return (sueldo / 23.83) * dias 
 }
 
+
 exports.vacaciones = (createdAt) =>{
+
     const meses = calculateMonths(new Date(),new Date(createdAt))
     const years = calculateYears(new Date(),new Date(createdAt))
-    let diasVaciones = null;
     if(meses < 5){
         return 'No tiene derechos a vacaciones'
     }else if(meses >= 5 && meses < 6){
-        diasVaciones = 6
+        return  6
     }else if(meses >= 6 && meses < 7){
-        diasVaciones = 7
+        return  7
     }else if(meses >= 7 && meses <8){
-        diasVaciones = 8
+        return  8
     }else if(meses >= 8 && meses <9){
-        diasVaciones = 9
+        return 9
     }else if(meses >= 9 && meses <10){
-        diasVaciones = 10
+        return 10
     }else if(meses >= 10 && meses <11){
-        diasVaciones = 11
-    }else if(meses >= 11 && meses <12){
-        diasVaciones = 12
-    }else if(meses >= 13 && meses <14){
-        diasVaciones = 14
+        return 11
+    }else if(meses >= 11 && meses <=12){
+        return  12
+    }else if(meses >= 12 && meses <13){
+        return 14
     }else{
-        diasVaciones = 18
+        return  18
     }
-    return diasVaciones
 }
 
 
@@ -107,17 +104,18 @@ const ISR = (sueldo) => {
       : sueldoAnual > 867123.0 && ((sueldoAnual - 416220.01) * 0.25 )/ 12
 }
   
-exports.nomina = (sueldo,sueldoPorHora,tipoNomina, ahorro = 0) => {
+exports.nomina = (sueldo,sueldoPorHora,tipoNomina,vacaciones = 0,regalia = 0,ahorro = 0) => {
 
     if(tipoNomina === 'Por Hora'){
         const afp = sueldo * 0.0287
         const sfs = sueldo * 0.0304
         const isr = ISR(sueldo - sfs - afp)
         const totalDescuento = afp + sfs + isr 
-        const sueldoNeto = sueldoPorHora - afp - sfs - isr 
+        const sueldoNeto = sueldoPorHora + vacaciones + regalia - afp - sfs - isr 
         const totalSinAhorro = sueldo - afp - sfs - isr / 12 - ahorro
         const sueldoAnual = sueldo * 12
-        const sueldoBruto = sueldo
+        const sueldoBruto = sueldoPorHora + vacaciones + regalia
+        const sueldoFijo = sueldo
         return {
           afp,
           sfs,
@@ -127,6 +125,7 @@ exports.nomina = (sueldo,sueldoPorHora,tipoNomina, ahorro = 0) => {
           totalSinAhorro,
           sueldoAnual,
           sueldoBruto,
+          sueldoFijo,
         }
 
     }
@@ -135,10 +134,11 @@ exports.nomina = (sueldo,sueldoPorHora,tipoNomina, ahorro = 0) => {
     const sfs = sueldo * 0.0304
     const isr = ISR(sueldo - sfs - afp)
     const totalDescuento = afp + sfs + isr 
-    const sueldoNeto = sueldo - afp - sfs - isr 
+    const sueldoNeto = sueldo + vacaciones + regalia - afp - sfs - isr 
     const totalSinAhorro = sueldo - afp - sfs - isr / 12 - ahorro
     const sueldoAnual = sueldo * 12
-    const sueldoBruto = sueldo
+    const sueldoBruto = sueldo + vacaciones + regalia
+    const sueldoFijo = sueldo
     return {
       afp,
       sfs,
@@ -148,5 +148,7 @@ exports.nomina = (sueldo,sueldoPorHora,tipoNomina, ahorro = 0) => {
       totalSinAhorro,
       sueldoAnual,
       sueldoBruto,
+      sueldoFijo,
+
     }
 }

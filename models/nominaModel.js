@@ -27,6 +27,14 @@ const nominaSchema = new mongoose.Schema({
     horasExtras:{
         type:Number,
     },
+    regalia:{
+        type:Number,
+        default:0
+    },
+    salarioPorVacaciones:{
+        type:Number,
+        default:0
+    },
     sueldoBruto:{
         type:Number,
         default:0
@@ -34,7 +42,10 @@ const nominaSchema = new mongoose.Schema({
     sueldoNeto:{
         type:Number,
         default:0
-
+    },
+    sueldoFijo:{
+        type:Number,
+        default:0
     },
     sueldoAnual:{
         type:Number,
@@ -55,11 +66,18 @@ const nominaSchema = new mongoose.Schema({
     totalSinAhorro:{
         type:Number,
     },
+    prestacionesLaborables:{
+        type:Number,
+        default:0
+
+    },
     descuentos:{
         type:Number,
+        default:0
     },
     bonus:{
         type:Number,
+        default:0
     },
     mes:{
         type:String,
@@ -89,7 +107,9 @@ const nominaSchema = new mongoose.Schema({
 var mes= ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre" ,"Octubre", "Noviembre" ,"Diciembre"];
 
 nominaSchema.pre('save', async function(next) {
-        this.sueldoNeto = this.sueldoNeto + this.bonus - this.descuentos
+
+        this.sueldoNeto = this.sueldoNeto + this.bonus - this.descuentos + this.prestacionesLaborables
+        this.sueldoBruto = this.sueldoBruto + this.bonus - this.descuentos + this.prestacionesLaborables
         this.totalDescuento =  this.totalDescuento + this.descuentos
         this.year = Number(this.nombreNomina.split(' ')[1])
         this.mes = this.nombreNomina.split(' ')[0]

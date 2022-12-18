@@ -75,6 +75,9 @@ const personasEntrevistadas = new mongoose.Schema({
         type:Date,
         default: moment().format()  
     },
+    vacanteAplicada:{
+        type:String,
+    },
     estado:{
         type:Boolean,
         default:true

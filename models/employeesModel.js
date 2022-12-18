@@ -67,6 +67,8 @@ const employeesSchema = new mongoose.Schema({
     tipoDeNomina:{
         type:String,
         required:[true,'Un empleado debe tener este campo'],
+        enum:['Nomina Fija','Por Hora']
+
     },
     estado:{
         type:Boolean,
@@ -91,14 +93,6 @@ const employeesSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     }, 
-    tiempoDeVacaciones:{
-        type:Array,
-        default:null
-    },
-    salarioPorVacaciones:{
-        type:Number,
-        default:null
-    },
     prestacionesLaborables:{
         type:String,
     },
@@ -111,6 +105,10 @@ const employeesSchema = new mongoose.Schema({
         type:Number,
     },
     salarioNeto:{
+        type:Number,
+        default:null
+    },
+    sueldoFijo:{
         type:Number,
         default:null
     },
@@ -158,6 +156,18 @@ const employeesSchema = new mongoose.Schema({
             ref:'Nomina'
         }
     ],
+    Vacaciones:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Vacaciones'
+        }
+    ],
+    Epps:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Epp'
+        }
+    ],
 },
 {
     toJSON: { virtuals: true },
@@ -167,25 +177,14 @@ const employeesSchema = new mongoose.Schema({
 
 //Virtuals 
 
-employeesSchema.virtual('DescuentoTotal').get(function() {
-    return this.totalDescuento = calcular.nomina(this.salarioBruto).total_descuento
-});
-
 employeesSchema.virtual('tiempoEnLaEmpresa').get(function() {
     return this.tiempoEnLaEmpresa = moment(this.createdAt).fromNow()
 });
 
-employeesSchema.virtual('DiaDeVacaciones').get(function() {
-    return this.DiaDeVacaciones = calcular.vacaciones(this.createdAt,this.salarioBruto)
-});
-
-
 employeesSchema.virtual('regalia').get(function() {
     return this.regalia = calcular.regalia(this.createdAt,this.salarioBruto)
 });
-employeesSchema.virtual('vacacionesDisponibles').get(function() {
-    return calcular.vacacionesDisponibles(this.createdAt)
-});
+
 
 
 
@@ -233,15 +232,6 @@ employeesSchema.pre('save', async function(next) {
     this.confirmPassword = undefined;
     // Converting Born day to Moment 
     this.fechaDeNacimiento = moment(this.fechaDeNacimiento).fromNow()
-    //Date of next vacations
-    const fechaDeSiguientesVacaciones = new Date()
-    const month  = ordenarMeses(fechaDeSiguientesVacaciones.getMonth() + 3) 
-    const day  = fechaDeSiguientesVacaciones.getDate()
-    const year  = ordenaraños(fechaDeSiguientesVacaciones.getMonth() + 3,fechaDeSiguientesVacaciones.getFullYear())
-    const newDate = new Date(`${year}-${month}-${day}`)
-    this.fechaDeSiguientesVacaciones = newDate    
-    //Salaries for vacation
-    this.salarioPorVacaciones =  this.salarioBruto * calcular.vacaciones(this.createdAt,this.salarioBruto) / 23.83 
     next();
   });
 

@@ -11,6 +11,10 @@ Router
 .delete(employeesController.eliminarEmpleados)
 
 Router
+.route('/stats/')
+.get(employeesController.getEmpleadosStats)
+
+Router
 .route('/despidos/:id')
 .patch(employeesController.despedirEmpleado)
 
