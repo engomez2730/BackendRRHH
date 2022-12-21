@@ -21,6 +21,7 @@ const nomina = require('./routes/nominaRoutes')
 const nominaCompleta = require('./routes/nominaCompleta')
 const vacaciones = require('./routes/vacacionRoute')
 const epp = require('./routes/eppRoutes')
+const puestos = require('./routes/puestosRoutes')
 const rootRoute = require('./routes/rootRoute')
 
 
@@ -52,6 +53,7 @@ app.use('/api/v1/despidos',despidos)
 app.use('/api/v1/nomina',nomina)
 app.use('/api/v1/nominaCompleta',nominaCompleta)
 app.use('/api/v1/vacaciones',vacaciones)
+app.use('/api/v1/puestos',puestos)
 app.use('/api/v1/epp',epp)
 
 app.all('*',(req,res,next) =>{

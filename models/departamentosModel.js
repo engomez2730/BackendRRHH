@@ -5,7 +5,6 @@ const departamentoSchema = new mongoose.Schema({
     nombre:{
         type:String,
         required:[true,'Un Departamento debe tener un nombre'],
-        enum:['Administracion','Taller','Barrick','Falcondo','Planta de Agregados','Inmobiliaria','Rio','Topografia','Campamento']
     },
     encargado:{
         type:String,
