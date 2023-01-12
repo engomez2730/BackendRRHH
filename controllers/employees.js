@@ -87,6 +87,7 @@ exports.verEmpleado = catchAsync(async (req,res,next) =>{
 })
 
 exports.editarEmpleado =catchAsync(async (req,res,next) =>{
+    console.log(req.body,req.file)
     let filterOBject = {...req.body}
     if(req.file){
         filterOBject.photo = req.file.filename
@@ -181,13 +182,13 @@ exports.nomina = catchAsync(async (req,res,next) =>{
 
 
 exports.getEmpleadosStats = catchAsync(async (req, res, next) => {
-  const query = req.query.busqueda || ''
-  console.log(query)
-  
   const stats = await employeeModel.aggregate([
     {
+      $match:{estado:true}
+    },
+    {
       $group: {
-        _id: { $toUpper: `$${query}` },
+        _id: { $toUpper: `$${req.query.query || "departamento"}` },
         numEmpleados: { $sum: 1 },
         avgSalario: { $avg: '$sueldoFijo' },
         salarioMenor: { $min: '$sueldoFijo' },

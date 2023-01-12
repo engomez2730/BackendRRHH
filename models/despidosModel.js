@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const despidosSchema = new mongoose.Schema({
     razon:{
         type:String,
+        enum:['Mala Conducta','Rotacion Laboral','Reducción de Personal','Otro','Mejor Oportunidad','Mal ambiente laboral','Mejor Oportunidad']
     },
     descripcion:{
         type:String,

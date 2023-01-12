@@ -42,7 +42,8 @@ const employeesSchema = new mongoose.Schema({
         'Independencia','La Altagracias','La Romana','La Vega','Maria Trinidad Sanchez',
         'Monseñor Nouel','Monte Cristi','Monte Plata','Pedernales','Peravia','Puerto Plata',
         'Samana','Sanchez Ramirez','San Cristobal','San Jose de Ocoa','San Juan','San Pedro de Macoris',
-        'Santiago','Santiago Rodriguez','Santo Domingo','Valverde'],
+        'Santiago','Santiago Rodriguez','Santo Domingo','Valverde','No Establecida'],
+        default:'No Establecida'
     },
     pais:{
         type:String,
@@ -55,13 +56,13 @@ const employeesSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-        required:[true,'Un empleado debe tener este campo'],
-        minlength:8
+/*         required:[true,'Un empleado debe tener este campo'],
+ */     
     },
     confirmPassword:{
         type:String,
-        required:[true,'Un empleado debe tener este campo'],
-        minlength:8
+/*         required:[true,'Un empleado debe tener este campo'],
+ */   
 
     },
     tipoDeNomina:{

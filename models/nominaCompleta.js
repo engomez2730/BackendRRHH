@@ -39,6 +39,12 @@ const nominaCompletaSchema = new mongoose.Schema({
             type:mongoose.Schema.ObjectId,
             ref:'Nomina'
         }
+    ],
+    Empleados:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Empleados'
+        }
     ]
 },
 {

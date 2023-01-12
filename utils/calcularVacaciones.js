@@ -75,7 +75,7 @@ exports.vacaciones = (createdAt) =>{
     }else if(meses >= 12 && meses <13){
         return 14
     }else{
-        return  18
+        return  14
     }
 }
 

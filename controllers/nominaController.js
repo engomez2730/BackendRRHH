@@ -130,10 +130,16 @@ exports.eliminarNominas = catchAsync(async (req,res) =>{
 })
 
 exports.getNominaStats = catchAsync(async (req, res, next) => {
+
+    console.log(req.query.query)
+
     const stats = await nominaModel.aggregate([
       {
-        $group: {
-          _id: { $toUpper: '$mes' },
+        $match:{year:Number(req.params.year)}
+      },
+      {
+        $group:{
+          _id: { $toUpper: `$${req.query.query || 'mes'}` },
           numTours: { $sum: 1 },
           avgSalario: { $avg: '$sueldoNeto' },
           salarioMenor: { $min: '$sueldoNeto' },

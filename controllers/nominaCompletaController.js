@@ -38,7 +38,10 @@ exports.verNominaCompletaOne = catchAsync(async (req,res,next) =>{
 
     const newNominaCompleta = await nominaCompletaModel.findById(req.params.id).populate({
         path:'Nominas'
+    }).populate({
+        path:'Empleados'
     })
+
     if(!newNominaCompleta) return next(new AppError('No existe NominaCompleta con este ID',404))
     
     res.status(201).json({

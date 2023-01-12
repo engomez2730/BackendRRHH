@@ -11,7 +11,7 @@ Router
 .delete(nominaController.eliminarNominas)
 
 Router
-.route('/stats')
+.route('/stats/:year')
 .get(nominaController.getNominaStats)
 
 

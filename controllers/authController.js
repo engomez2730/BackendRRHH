@@ -48,12 +48,14 @@ exports.verLogin = (req,res,next) =>{
 
 exports.crearEmpleado = catchAsync(async (req,res,next) =>{
 
+
     req.body.cedula = Number(req.body.cedula)
     req.body.celular = Number(req.body.celular)
     //Departamentos
     const departamentoEscogido = await departamentoModel.findOne({nombre:req.body.departamento})
     if(!departamentoEscogido) return next(new AppError(`No existe departamento ${req.body.departamento}`,401))
     //Empleado
+    console.log(req.body)
     const newEmpleado = await employeeModel.create(req.body)
 
     await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:newEmpleado._id}},{

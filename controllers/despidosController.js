@@ -13,10 +13,13 @@ exports.crearDespido = catchAsync(async (req,res,next) =>{
 
   const usuario = await employeeModel.findByIdAndUpdate(req.params.id,{estado:false}).populate('Vacaciones')
 
-  await departamentoModel.updateOne({departamento:usuario.departamento},{$pull:{Empleados:usuario._id}},{
+  const departamentoChange = await departamentoModel.findOne({nombre:usuario.departamento})
+  console.log(departamentoChange)   
+
+  await departamentoModel.updateOne({_id:departamentoChange._id},{$pull:{Empleados:usuario._id}},{
     new:true,
     runValidators:true
-    })
+  })
 
   let Vacaciones = false;
   if(usuario.Vacaciones.length === 0){
@@ -42,13 +45,9 @@ exports.crearDespido = catchAsync(async (req,res,next) =>{
 
   req.body.Usuario = usuario._id
 
-  console.log(req.body)
 
   const despido = await despidosModel.create(req.body)
-
   despidosModel.updateOne({_id:despido._id},{$pull:{Usuario:usuario._id}})
-
-
   next()
 })
 
