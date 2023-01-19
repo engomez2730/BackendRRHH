@@ -140,6 +140,11 @@ const employeesSchema = new mongoose.Schema({
         type:Date,
         default:null
     },
+    contactoDeEmergencia:{
+        type:Number,
+        default:null,
+        required:[true,'Debes introducir un contacto de emergencia']
+    },
     costoPorHora:{
         type:Number,
         default:null
@@ -160,6 +165,12 @@ const employeesSchema = new mongoose.Schema({
         {
             type:mongoose.Schema.ObjectId,
             ref:'Epp'
+        }
+    ],
+    Despidos:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Despidos'
         }
     ],
 },

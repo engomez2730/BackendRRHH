@@ -12,10 +12,7 @@ const calcular = require ('../utils/calcularVacaciones')
 exports.crearDespido = catchAsync(async (req,res,next) =>{
 
   const usuario = await employeeModel.findByIdAndUpdate(req.params.id,{estado:false}).populate('Vacaciones')
-
   const departamentoChange = await departamentoModel.findOne({nombre:usuario.departamento})
-  console.log(departamentoChange)   
-
   await departamentoModel.updateOne({_id:departamentoChange._id},{$pull:{Empleados:usuario._id}},{
     new:true,
     runValidators:true
@@ -45,8 +42,9 @@ exports.crearDespido = catchAsync(async (req,res,next) =>{
 
   req.body.Usuario = usuario._id
 
-
   const despido = await despidosModel.create(req.body)
+  req.body.idUsuarioADD = usuario._id
+  req.body.idDespidoADD = despido._id
   despidosModel.updateOne({_id:despido._id},{$pull:{Usuario:usuario._id}})
   next()
 })
@@ -108,17 +106,11 @@ exports.desvincular = catchAsync(async (req,res,next) =>{
         const diasVacaciones = calcular.vacaciones(usuario.createdAt)
         if(!Vacaciones){
             salarioVacaciones = calcular.sueldoVacaciones(usuario.sueldoFijo,diasVacaciones) || 0
-
         }
         const regalia = calcular.regalia(usuario.createdAt, usuario.sueldoFijo)
-
         req.body.Vacaciones = salarioVacaciones
         req.body.regalia = regalia
-        req.body.Usuario = usuario._id
-
-        console.log(req.body)
-  
-
+        req.body.Usuario = usuario._id  
         const despido = await despidosModel.create(req.body)
     
     if(!usuario) return next(new AppError('No hay Despido con este ID',404))
@@ -129,6 +121,7 @@ exports.desvincular = catchAsync(async (req,res,next) =>{
 
 
 exports.nominaDespido = catchAsync(async (req,res,next) =>{
+
   const empleado = await employeeModel.findById(req.body.Empleados).populate({
     path:'Nominas'
     }).populate({
