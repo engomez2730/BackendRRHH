@@ -16,11 +16,18 @@ exports.crearVacaciones = catchAsync(async (req,res,next) =>{
     req.body.siguientesVacacionesFecha = new Date(`${year}-${month}-${day}`)
 
     const empleadoPrueba = await empleadosModel.findById(req.body.key)
-/*     req.body.diasDeVacaciones = calcularVacaciones.vacaciones(empleadoPrueba.createdAt)
- */    if(req.body.diasDeVacaciones === 'No tiene derechos a vacaciones'){
+    if(req.body.diasDeVacaciones === 0){
         return next(new AppError('No tiene derechos a vacaciones',403))
     }
-    req.body.salarioPorVacaciones = calcularVacaciones.sueldoVacaciones(empleadoPrueba.sueldoFijo,calcularVacaciones.vacaciones(empleadoPrueba.createdAt))
+
+    const diasDeVacaciones = calcularVacaciones.vacaciones(empleadoPrueba.createdAt)
+
+    if(diasDeVacaciones <= 0){
+        return next(new AppError('No tienes derecho a vacaciones aun'))
+    }
+
+
+    req.body.salarioPorVacaciones = calcularVacaciones.sueldoVacaciones(empleadoPrueba.sueldoFijo,diasDeVacaciones)
     const newVacaciones = await vacacionesModel.create(req.body)
 
 

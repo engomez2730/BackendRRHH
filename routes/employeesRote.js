@@ -18,6 +18,10 @@ Router
 .route('/despidos/:id')
 .patch(employeesController.despedirEmpleado)
 
+Router
+.route('/beneficios/:id')
+.patch(employeesController.agregarBeneficio)
+
 
 Router
 .route('/vacaciones/:id')

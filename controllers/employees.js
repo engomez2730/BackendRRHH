@@ -3,6 +3,7 @@ const AppError = require('../utils/appErrorClass')
 const catchAsync =  require('../utils/catchAsync')
 const departamentoModel = require('../models/departamentosModel')
 const despidosModel = require('../models/despidosModel')
+const BenefModel = require('../models/BenefModel')
 const factory = require('../utils/factory')
 const multer = require('multer');
 const sharp = require('sharp');
@@ -109,7 +110,7 @@ exports.editarEmpleado =catchAsync(async (req,res,next) =>{
       await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:usuario._id}},{
         new:true,
         runValidators:true
-    })
+      })
     }
     const doc = await employeeModel.findByIdAndUpdate(req.params.id, filterOBject, {
         new: true,
@@ -136,6 +137,20 @@ exports.eliminarEmpleado = catchAsync(async (req,res,next) =>{
   res.status(200).json({
     status: 'success',
     empleadoEliminado
+  });
+})
+
+exports.agregarBeneficio = catchAsync(async (req,res,next) =>{
+
+  req.body.Beneficios.forEach(async e =>{
+    console.log(e)
+    await employeeModel.updateOne({_id:req.params.id},{$push:{Beneficios:e}},{
+      new:true,
+      runValidators:true
+    })
+  })
+  res.status(200).json({
+    status: 'success'
   });
 })
 

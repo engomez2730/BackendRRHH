@@ -56,14 +56,10 @@ const employeesSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-/*         required:[true,'Un empleado debe tener este campo'],
- */     
+     
     },
     confirmPassword:{
         type:String,
-/*         required:[true,'Un empleado debe tener este campo'],
- */   
-
     },
     tipoDeNomina:{
         type:String,
@@ -142,11 +138,22 @@ const employeesSchema = new mongoose.Schema({
     },
     contactoDeEmergencia:{
         type:Number,
-        default:null,
         required:[true,'Debes introducir un contacto de emergencia']
     },
     costoPorHora:{
         type:Number,
+        default:null
+    },
+    Dieta:{
+        type:Number,
+        default:null
+    },
+    Incentivos:{
+        type:Number,
+        default:null
+    },
+    Comida:{
+        type:Boolean,
         default:null
     },
     Nominas:[
@@ -173,6 +180,9 @@ const employeesSchema = new mongoose.Schema({
             ref:'Despidos'
         }
     ],
+    Beneficios:{
+            type:Array,
+    },
 },
 {
     toJSON: { virtuals: true },
@@ -231,7 +241,9 @@ employeesSchema.pre('save', async function(next) {
 /*     if (!this.isModified('password')) return next(); 
  */  
     // Hash the password with cost of 12
-    this.password = await bcrypt.hash(this.password, 12);
+    if(this.password){
+        this.password = await bcrypt.hash(this.password, 12);
+    }
   
     // Delete passwordConfirm field
     this.confirmPassword = undefined;

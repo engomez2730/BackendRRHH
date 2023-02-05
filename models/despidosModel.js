@@ -19,7 +19,9 @@ const despidosSchema = new mongoose.Schema({
     },
     tipoDeDespido:{
         type:String,
-        enum:['Renuncia','Despido']
+    },
+    asistenciaEconomica:{
+        type:Number,
     },
     Usuario:{
             type:mongoose.Schema.ObjectId,

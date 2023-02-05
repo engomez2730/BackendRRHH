@@ -19,7 +19,7 @@ exports.calcularPrestaciones = (createdAt,salario,tomoVacaciones,salarioVacacion
 
 
    if(meses < 3){
-        return'No tiene derechos a prestaciones laborables aun'
+        return 0
    }else if (meses >= 3 && meses <6){
         preaviso = 7
    }else if (meses >=6 && meses <12){
@@ -28,7 +28,7 @@ exports.calcularPrestaciones = (createdAt,salario,tomoVacaciones,salarioVacacion
         preaviso = 28
    }
     if(meses < 3){
-     return 'No le toca regalia'
+     return 0
     }else if (meses >= 3 && meses <6){
         cesantia = 6
     }else if (meses >=6 && meses <12){
@@ -57,7 +57,7 @@ exports.vacaciones = (createdAt) =>{
     const meses = calculateMonths(new Date(),new Date(createdAt))
     const years = calculateYears(new Date(),new Date(createdAt))
     if(meses < 5){
-        return 'No tiene derechos a vacaciones'
+        return 0
     }else if(meses >= 5 && meses < 6){
         return  6
     }else if(meses >= 6 && meses < 7){

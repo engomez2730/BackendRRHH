@@ -22,6 +22,7 @@ const nominaCompleta = require('./routes/nominaCompleta')
 const vacaciones = require('./routes/vacacionRoute')
 const epp = require('./routes/eppRoutes')
 const puestos = require('./routes/puestosRoutes')
+const beneficiosRoute = require('./routes/beneficiosRoute')
 const rootRoute = require('./routes/rootRoute')
 
 
@@ -55,6 +56,7 @@ app.use('/api/v1/nominaCompleta',nominaCompleta)
 app.use('/api/v1/vacaciones',vacaciones)
 app.use('/api/v1/puestos',puestos)
 app.use('/api/v1/epp',epp)
+app.use('/api/v1/beneficios',beneficiosRoute)
 
 app.all('*',(req,res,next) =>{
    return next(new AppError(`La ruta ${req.originalUrl} no existe ☹`,404))

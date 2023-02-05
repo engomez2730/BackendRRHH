@@ -48,7 +48,6 @@ exports.verLogin = (req,res,next) =>{
 
 exports.crearEmpleado = catchAsync(async (req,res,next) =>{
 
-
     req.body.cedula = Number(req.body.cedula)
     req.body.celular = Number(req.body.celular)
     req.body.contactoDeEmergencia = Number(req.body.contactoDeEmergencia)
@@ -56,7 +55,6 @@ exports.crearEmpleado = catchAsync(async (req,res,next) =>{
     const departamentoEscogido = await departamentoModel.findOne({nombre:req.body.departamento})
     if(!departamentoEscogido) return next(new AppError(`No existe departamento ${req.body.departamento}`,401))
     //Empleado
-    console.log(req.body)
     const newEmpleado = await employeeModel.create(req.body)
 
     await departamentoModel.updateOne({_id:departamentoEscogido._id},{$push:{Empleados:newEmpleado._id}},{
@@ -65,9 +63,6 @@ exports.crearEmpleado = catchAsync(async (req,res,next) =>{
     })
 
     const personasEntrevistadasDocument = await personasEntrevistadas.deleteOne({cedula:req.body.cedula})
-    console.log(personasEntrevistadasDocument)
-
-
     createSendToken(newEmpleado,201,res,req)
     res.status(201).json({
         status:'Success',
