@@ -136,6 +136,17 @@ const employeesSchema = new mongoose.Schema({
         type:Date,
         default:null
     },
+    licenciasDeConducir:{
+        type:Boolean,
+        default:false,
+    },
+    tipoLicencia:{
+        type:String,
+    },
+    licenciaDeConducirFechaExp:{
+        type:Date,
+        default:null,
+    },
     contactoDeEmergencia:{
         type:Number,
         required:[true,'Debes introducir un contacto de emergencia']
@@ -144,22 +155,16 @@ const employeesSchema = new mongoose.Schema({
         type:Number,
         default:null
     },
-    Dieta:{
-        type:Number,
-        default:null
-    },
-    Incentivos:{
-        type:Number,
-        default:null
-    },
-    Comida:{
-        type:Boolean,
-        default:null
-    },
     Nominas:[
         {
             type:mongoose.Schema.ObjectId,
             ref:'Nomina'
+        }
+    ],
+    Licencias:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Licencias'
         }
     ],
     Vacaciones:[

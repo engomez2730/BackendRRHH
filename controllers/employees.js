@@ -48,6 +48,8 @@ exports.verEmpleados = catchAsync( async (req,res) =>{
       path:'Epps'
     }).populate({
       path:'Despidos'
+    }).populate({
+      path:'Licencias'
     })
     const Empleados = await query;
     const empleadosTotales = await employeeModel.find({})
@@ -79,6 +81,8 @@ exports.verEmpleado = catchAsync(async (req,res,next) =>{
     path:'Vacaciones'
   }).populate({
     path:'Epps'
+  }).populate({
+    path:'Licencias'
   })
   
   res.status(200).json({
