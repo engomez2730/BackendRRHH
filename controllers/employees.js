@@ -94,7 +94,7 @@ exports.verEmpleado = catchAsync(async (req,res,next) =>{
 })
 
 exports.editarEmpleado =catchAsync(async (req,res,next) =>{
-    console.log(req.body,req.file)
+    console.log(req.file)
     let filterOBject = {...req.body}
     if(req.file){
         filterOBject.photo = req.file.filename
