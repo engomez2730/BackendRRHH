@@ -62,7 +62,9 @@ exports.crearEmpleado = catchAsync(async (req,res,next) =>{
       runValidators:true
     })
 
-    const personasEntrevistadasDocument = await personasEntrevistadas.deleteOne({cedula:req.body.cedula})
+    
+
+    await personasEntrevistadas.deleteOne({cedula:req.body.cedula})
     createSendToken(newEmpleado,201,res,req)
     res.status(201).json({
         status:'Success',
