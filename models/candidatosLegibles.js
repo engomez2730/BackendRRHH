@@ -33,7 +33,6 @@ const candidatosSchema = new mongoose.Schema({
     },
     puestoSolicitado:{
         type:String,
-        required:[true,'Un empleado debe tener una correo'],
     },
     createdAt:{
         type:Date,

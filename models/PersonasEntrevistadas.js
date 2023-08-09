@@ -67,17 +67,6 @@ const personasEntrevistadas = new mongoose.Schema({
         type:String,
         required:[true,'Un empleado debe tener un pais']
     },
-    puestoAplicado:{
-        type:String,
-        required:[true,'Un empleado debe tener un puesto'],
-        /* enum:['Gerente General','Encargado Recursos Humanos','Asistente Recursos Humanos','Encargado Contabilidad',
-              'Asistente Contabilidad','Encargada Commercial','Conserje','Seguridad','Ingeniero Civil','Ingeniero Industrial',
-            'Supervisor','Capataz','HCE','Encargado Seguridad Barrick','Chofer','Operador','Mecanico Categoria1','Mecanico Categoria 2',
-            'Mecanico Categoria 3','Mecanico Categoria 4','Soldador','Gomero','Listero','Vigia','Topografo','Arquitecto',
-            'Jardinero','Encargado de Compras','Encargado de Equipos','Encargado de Almacen','Labador','Vigilante','Encargado Despacho',
-            'Encargado Planta Agregado','Operador Planta','Encargado Taller','Otro','Mecanico'
-        ] */
-    },
     estadoLaboral:{
         type:String,
         enum:['Contratado','En Espera','No Calificado','Por Entrevistar','Otro']

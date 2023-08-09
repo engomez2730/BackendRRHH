@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
-const BeneficiosSchema = new mongoose.Schema(
+const AmonestacionesSchema = new mongoose.Schema(
   {
-    nombreBeneficio: {
+    nombreAmonestacion: {
       type: String,
     },
-    cantidadBeneficio: {
+    cantidadAmonestacion: {
       type: Number,
     },
     createdAt: {
@@ -19,8 +19,9 @@ const BeneficiosSchema = new mongoose.Schema(
   }
 );
 
+const AmonestacionesModel = new mongoose.model(
+  "Amonestaciones",
+  AmonestacionesSchema
+);
 
-
-const BeneficiosModel = new mongoose.model("Beneficios", BeneficiosSchema);
-
-module.exports = BeneficiosModel;
+module.exports = AmonestacionesModel;
