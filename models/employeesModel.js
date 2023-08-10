@@ -111,8 +111,8 @@ const employeesSchema = new mongoose.Schema(
     },
     rol: {
       type: String,
-      default: "encargado",
-      enum: ["encargado", "admin"],
+      default: "empleado",
+      enum: ["encargado", "admin", "empleado"],
     },
     salarioBruto: {
       type: Number,
@@ -134,18 +134,7 @@ const employeesSchema = new mongoose.Schema(
       type: String,
     },
     departamento: {
-      type: String,
-      enum: [
-        "Administracion",
-        "Taller",
-        "Barrick",
-        "Falcondo",
-        "Planta de Agregados",
-        "Inmobiliaria",
-        "Rio",
-        "Topografia",
-        "Campamento",
-      ],
+      type: String
     },
     licenciasDeConducir: {
       type: Boolean,

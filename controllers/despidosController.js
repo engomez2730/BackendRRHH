@@ -28,49 +28,59 @@ exports.crearDespido = catchAsync(async (req, res, next) => {
     )
     .populate("Vacaciones");
 
+  const diasDeVacaciones = calcular.vacaciones(usuario.createdAt);
+  console.log(req.body.diasVacaciones);
+
   if (!req.body.tomoVacaciones) {
     sueldoDeVacaciones = calcular.sueldoVacaciones(
-      usuario.sueldoFijo,
-      req.body.diasDeVacaciones
+      usuario.salarioBruto,
+      diasDeVacaciones
+    );
+  } else {
+    sueldoDeVacaciones = calcular.sueldoVacaciones(
+      usuario.salarioBruto,
+      req.body.diasVacaciones
     );
   }
 
   if (req.body.tipo === "Desahucio") {
-    const regalia = calcular.regalia(usuario.createdAt, usuario.sueldoFijo);
+    const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
     prestaciones = calcular.calcularPrestaciones(
       usuario.createdAt,
-      usuario.sueldoFijo,
-      req.body.tomoVacaciones,
+      usuario.salarioBruto,
+      false,
       sueldoDeVacaciones,
       regalia
     );
+
+    console.log(prestaciones, sueldoDeVacaciones, regalia);
   } else if (req.body.tipo === "Renuncia") {
-    const regalia = calcular.regalia(usuario.createdAt, usuario.sueldoFijo);
+    const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
     prestaciones = regalia + sueldoDeVacaciones;
   } else if (req.body.tipo === "Despido") {
-    const regalia = calcular.regalia(usuario.createdAt, usuario.sueldoFijo);
+    const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
     prestaciones = regalia + sueldoDeVacaciones;
   } else if (req.body.tipo === "Dimision") {
-    const regalia = calcular.regalia(usuario.createdAt, usuario.sueldoFijo);
+    const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
     prestaciones = calcular.calcularPrestaciones(
       usuario.createdAt,
-      usuario.sueldoFijo,
-      req.body.tomoVacaciones,
+      usuario.salarioBruto,
+      false,
       sueldoDeVacaciones,
       regalia
     );
   } else if (req.body.tipo === "Muerte") {
-    const sueldoDeudor = (usuario.sueldoFijo / 30) * new Date().getDate();
+    const sueldoDeudor = (usuario.salarioBruto / 30) * new Date().getDate();
     const meses = calculateMonths(new Date(), new Date(usuario.createdAt));
     let AsistenciaEconomica;
     if (meses >= 3) {
-      AsistenciaEconomica = (usuario.sueldoFijo * 30) / 5;
+      AsistenciaEconomica = (usuario.salarioBruto * 30) / 5;
     }
     if (meses >= 6) {
-      AsistenciaEconomica = (usuario.sueldoFijo * 30) / 10;
+      AsistenciaEconomica = (usuario.salarioBruto * 30) / 10;
     }
     if (meses > 12) {
-      AsistenciaEconomica = (usuario.sueldoFijo * 30) / 15;
+      AsistenciaEconomica = (usuario.salarioBruto * 30) / 15;
     }
     prestaciones = AsistenciaEconomica + sueldoDeudor + sueldoDeVacaciones;
   }

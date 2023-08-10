@@ -33,6 +33,45 @@ const upload = multer({
 
 exports.uploadUserPhoto = upload.single("photo");
 
+exports.verEmpleadosBuscar = catchAsync(async (req, res) => {
+
+  const Empleados = await employeeModel
+    .find({
+      nombre: {
+        $regex: `${req.query.query}`,
+        $options: "i", // Case-insensitive search
+      },
+    })
+    .populate({
+      path: "Nominas",
+    })
+    .populate({
+      path: "Vacaciones",
+    })
+    .populate({
+      path: "Epps",
+    })
+    .populate({
+      path: "Despidos",
+    })
+    .populate({
+      path: "Licencias",
+    })
+    .populate({
+      path: "Beneficios",
+    })
+    .populate({
+      path: "Amonestaciones",
+    });
+
+  res.status(201).json({
+    status: "Success",
+    empleados: {
+      Empleados,
+    },
+  });
+});
+
 exports.verEmpleados = catchAsync(async (req, res) => {
   const queryObj = { ...req.query };
   const excludeFields = ["page", "sort", "limit", "fields"];
@@ -103,6 +142,7 @@ exports.verEmpleado = catchAsync(async (req, res, next) => {
       path: "Amonestaciones",
     });
 
+
   res.status(200).json({
     status: "success",
     data: {
@@ -112,7 +152,6 @@ exports.verEmpleado = catchAsync(async (req, res, next) => {
 });
 
 exports.editarEmpleado = catchAsync(async (req, res, next) => {
-  console.log(req.file);
   let filterOBject = { ...req.body };
   if (req.file) {
     filterOBject.photo = req.file.filename;
@@ -148,6 +187,7 @@ exports.editarEmpleado = catchAsync(async (req, res, next) => {
     );
   }
 
+  console.log(req.body)
 
   const doc = await employeeModel.findByIdAndUpdate(
     req.params.id,
@@ -162,7 +202,6 @@ exports.editarEmpleado = catchAsync(async (req, res, next) => {
     return next(new AppError("No se encontro ID con este Usuario", 404));
   }
 
-  console.log(doc);
 
   res.status(200).json({
     status: "success",
@@ -185,7 +224,6 @@ exports.eliminarEmpleado = catchAsync(async (req, res, next) => {
 
 exports.agregarBeneficio = catchAsync(async (req, res, next) => {
   req.body.Beneficios.forEach(async (e) => {
-    console.log(e);
     await employeeModel.updateOne(
       { _id: req.params.id },
       { $push: { Beneficios: e } },
@@ -259,22 +297,84 @@ exports.despedirEmpleado = catchAsync(async (req, res) => {
 exports.getEmpleadosStats = catchAsync(async (req, res, next) => {
   const stats = await employeeModel.aggregate([
     {
-      $match: { estado: true },
+      $facet: {
+        totalEmployees: [{ $group: { _id: null, total: { $sum: 1 } } }],
+        employeesByCountry: [
+          {
+            $group: {
+              _id: "$pais", // Grouping by country
+              totalEmployees: { $sum: 1 },
+              activeEmployees: {
+                $sum: { $cond: [{ $eq: ["$estado", true] }, 1, 0] },
+              },
+              inactiveEmployees: {
+                $sum: { $cond: [{ $eq: ["$estado", false] }, 1, 0] },
+              },
+              averageSalary: { $avg: "$salarioBruto" },
+              totalVacations: { $sum: { $size: "$Vacaciones" } },
+            },
+          },
+        ],
+        employeesByDepartment: [
+          {
+            $group: {
+              _id: "$departamento", // Grouping by department
+              totalEmployees: { $sum: 1 },
+              activeEmployees: {
+                $sum: { $cond: [{ $eq: ["$estado", true] }, 1, 0] },
+              },
+              inactiveEmployees: {
+                $sum: { $cond: [{ $eq: ["$estado", false] }, 1, 0] },
+              },
+              averageSalary: { $avg: "$salarioBruto" },
+              totalVacations: { $sum: { $size: "$Vacaciones" } },
+            },
+          },
+        ],
+        employeesByNominaType: [
+          {
+            $group: {
+              _id: "$tipoDeNomina", // Grouping by tipoDeNomina
+              totalEmployees: { $sum: 1 },
+              activeEmployees: {
+                $sum: { $cond: [{ $eq: ["$estado", true] }, 1, 0] },
+              },
+              inactiveEmployees: {
+                $sum: { $cond: [{ $eq: ["$estado", false] }, 1, 0] },
+              },
+              averageSalary: { $avg: "$salarioBruto" },
+              totalVacations: { $sum: { $size: "$Vacaciones" } },
+            },
+          },
+        ],
+      },
     },
     {
-      $group: {
-        _id: { $toUpper: `$${req.query.query || "departamento"}` },
-        numEmpleados: { $sum: 1 },
-        avgSalario: { $avg: "$sueldoFijo" },
-        salarioMenor: { $min: "$sueldoFijo" },
-        salarioMayor: { $max: "$sueldoFijo" },
-        totalNomina: { $sum: "$sueldoNeto" },
+      $project: {
+        totalEmployees: { $arrayElemAt: ["$totalEmployees.total", 0] },
+        employeesByCountry: 1,
+        employeesByDepartment: 1,
+        employeesByNominaType: 1,
+      },
+    },
+    {
+      $project: {
+        totalEmployees: 1,
+        employeesByCountry: 1,
+        employeesByDepartment: 1,
+        employeesByNominaType: 1,
+        totalActiveEmployees: { $sum: "$employeesByCountry.activeEmployees" },
+        totalInactiveEmployees: {
+          $sum: "$employeesByCountry.inactiveEmployees",
+        },
       },
     },
   ]);
 
+  const statsFinal = stats[0];
+
   res.status(200).json({
     status: "success",
-    stats,
+    statsFinal,
   });
 });
