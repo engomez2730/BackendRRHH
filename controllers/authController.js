@@ -46,7 +46,8 @@ exports.verLogin = (req, res, next) => {
 };
 
 exports.crearEmpleado = catchAsync(async (req, res, next) => {
-  console.log(req.body);
+  console.log(req.body.tipoDeNomina);
+
   req.body.cedula = Number(req.body.cedula);
   req.body.celular = Number(req.body.celular);
   req.body.contactoDeEmergencia = Number(req.body.contactoDeEmergencia);

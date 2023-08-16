@@ -34,7 +34,6 @@ const upload = multer({
 exports.uploadUserPhoto = upload.single("photo");
 
 exports.verEmpleadosBuscar = catchAsync(async (req, res) => {
-
   const Empleados = await employeeModel
     .find({
       nombre: {
@@ -142,7 +141,6 @@ exports.verEmpleado = catchAsync(async (req, res, next) => {
       path: "Amonestaciones",
     });
 
-
   res.status(200).json({
     status: "success",
     data: {
@@ -152,6 +150,7 @@ exports.verEmpleado = catchAsync(async (req, res, next) => {
 });
 
 exports.editarEmpleado = catchAsync(async (req, res, next) => {
+  console.log(req.file, req.files);
   let filterOBject = { ...req.body };
   if (req.file) {
     filterOBject.photo = req.file.filename;
@@ -187,7 +186,7 @@ exports.editarEmpleado = catchAsync(async (req, res, next) => {
     );
   }
 
-  console.log(req.body)
+  console.log(req.body);
 
   const doc = await employeeModel.findByIdAndUpdate(
     req.params.id,
@@ -201,7 +200,6 @@ exports.editarEmpleado = catchAsync(async (req, res, next) => {
   if (!doc) {
     return next(new AppError("No se encontro ID con este Usuario", 404));
   }
-
 
   res.status(200).json({
     status: "success",

@@ -134,7 +134,7 @@ const employeesSchema = new mongoose.Schema(
       type: String,
     },
     departamento: {
-      type: String
+      type: String,
     },
     licenciasDeConducir: {
       type: Boolean,
