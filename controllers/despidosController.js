@@ -1,22 +1,11 @@
 const despidosModel = require("../models/despidosModel");
-const nominaModel = require("../models/nominaModel");
-const nominaCompleta = require("../models/nominaCompleta");
+
 const employeeModel = require("../models/employeesModel");
-const departamentoModel = require("../models/departamentosModel");
 const catchAsync = require("../utils/catchAsync");
-const factory = require("../utils/factory");
 const AppError = require("../utils/appErrorClass");
 const calcular = require("../utils/calcularVacaciones");
-const moment = require("moment");
-
-const calculateMonths = (date1, date2) => {
-  return (date1 - date2) / (1000 * 3600 * 24 * 30);
-};
 
 exports.crearDespido = catchAsync(async (req, res, next) => {
-  let prestaciones = 0;
-  let sueldoDeVacaciones = 0;
-
   const usuario = await employeeModel
     .findByIdAndUpdate(
       req.params.id,
@@ -28,22 +17,7 @@ exports.crearDespido = catchAsync(async (req, res, next) => {
     )
     .populate("Vacaciones");
 
-  const diasDeVacaciones = calcular.vacaciones(usuario.createdAt);
-  console.log(req.body.diasVacaciones);
-
-  if (!req.body.tomoVacaciones) {
-    sueldoDeVacaciones = calcular.sueldoVacaciones(
-      usuario.salarioBruto,
-      diasDeVacaciones
-    );
-  } else {
-    sueldoDeVacaciones = calcular.sueldoVacaciones(
-      usuario.salarioBruto,
-      req.body.diasVacaciones
-    );
-  }
-
-  if (req.body.tipo === "Desahucio") {
+  /*   if (req.body.tipo === "Desahucio") {
     const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
     prestaciones = calcular.calcularPrestaciones(
       usuario.createdAt,
@@ -52,8 +26,6 @@ exports.crearDespido = catchAsync(async (req, res, next) => {
       sueldoDeVacaciones,
       regalia
     );
-
-    console.log(prestaciones, sueldoDeVacaciones, regalia);
   } else if (req.body.tipo === "Renuncia") {
     const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
     prestaciones = regalia + sueldoDeVacaciones;
@@ -83,15 +55,23 @@ exports.crearDespido = catchAsync(async (req, res, next) => {
       AsistenciaEconomica = (usuario.salarioBruto * 30) / 15;
     }
     prestaciones = AsistenciaEconomica + sueldoDeudor + sueldoDeVacaciones;
-  }
+  } */
 
   const newDespido = await despidosModel.create({
-    razon: req.body.razon,
     tipoDeDespido: req.body.tipo,
     descripcion: req.body.descripcion,
-    prestacionesLaborables: prestaciones,
+    prestacionesLaborables: req.body.prestacionesLaborables,
     Usuario: req.params.id,
   });
+
+  await employeeModel.updateOne(
+    { _id: usuario._id },
+    { $push: { Despidos: newDespido._id } },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   res.status(201).json({
     status: "Success",

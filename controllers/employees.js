@@ -42,9 +42,6 @@ exports.verEmpleadosBuscar = catchAsync(async (req, res) => {
       },
     })
     .populate({
-      path: "Nominas",
-    })
-    .populate({
       path: "Vacaciones",
     })
     .populate({
@@ -61,6 +58,9 @@ exports.verEmpleadosBuscar = catchAsync(async (req, res) => {
     })
     .populate({
       path: "Amonestaciones",
+    })
+    .populate({
+      path: "Permisos",
     });
 
   res.status(201).json({
@@ -78,9 +78,6 @@ exports.verEmpleados = catchAsync(async (req, res) => {
   const query = employeeModel
     .find(queryObj)
     .populate({
-      path: "Nominas",
-    })
-    .populate({
       path: "Vacaciones",
     })
     .populate({
@@ -97,6 +94,9 @@ exports.verEmpleados = catchAsync(async (req, res) => {
     })
     .populate({
       path: "Amonestaciones",
+    })
+    .populate({
+      path: "Permisos",
     });
   const Empleados = await query;
   const empleadosTotales = await employeeModel.find({});
@@ -123,9 +123,6 @@ exports.verEmpleado = catchAsync(async (req, res, next) => {
   const doc = await employeeModel
     .findById(req.params.id)
     .populate({
-      path: "Nominas",
-    })
-    .populate({
       path: "Vacaciones",
     })
     .populate({
@@ -139,6 +136,9 @@ exports.verEmpleado = catchAsync(async (req, res, next) => {
     })
     .populate({
       path: "Amonestaciones",
+    })
+    .populate({
+      path: "Permisos",
     });
 
   res.status(200).json({

@@ -151,16 +151,14 @@ const employeesSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Debes introducir un contacto de emergencia"],
     },
+    inicioLaboral: {
+      type: Date,
+      default: null,
+    },
     costoPorHora: {
       type: Number,
       default: null,
     },
-    Nominas: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Nomina",
-      },
-    ],
     Licencias: [
       {
         type: mongoose.Schema.ObjectId,
@@ -197,51 +195,18 @@ const employeesSchema = new mongoose.Schema(
         ref: "Amonestaciones",
       },
     ],
+    Permisos: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Permisos",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
-
-//Virtuals
-
-employeesSchema.virtual("tiempoEnLaEmpresa").get(function () {
-  return (this.tiempoEnLaEmpresa = moment(this.createdAt).fromNow());
-});
-
-employeesSchema.virtual("regalia").get(function () {
-  return (this.regalia = calcular.regalia(this.createdAt, this.salarioBruto));
-});
-
-//Methods
-
-const ordenarMeses = (mes, año) => {
-  if (mes === 12) {
-    mes = 1;
-  } else if (mes === 13) {
-    mes = 2;
-  } else if (mes === 14) {
-    mes = 3;
-  }
-
-  return mes;
-};
-
-const ordenaraños = (mes, año) => {
-  if (mes === 12) {
-    mes = 1;
-    año = año + 1;
-  } else if (mes === 13) {
-    mes = 2;
-    año = año + 1;
-  } else if (mes === 14) {
-    mes = 3;
-    año = año + 1;
-  }
-
-  return año;
-};
 
 employeesSchema.pre("save", async function (next) {
   // Only run this function if password was actually modified
@@ -255,8 +220,8 @@ employeesSchema.pre("save", async function (next) {
   // Delete passwordConfirm field
   this.confirmPassword = undefined;
   // Converting Born day to Moment
-  this.fechaDeNacimiento = moment(this.fechaDeNacimiento).fromNow();
-  next();
+  /*   this.fechaDeNacimiento = moment(this.fechaDeNacimiento).fromNow();
+   */ next();
 });
 
 employeesSchema.methods.correctPassword = async function (

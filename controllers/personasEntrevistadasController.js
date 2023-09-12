@@ -3,9 +3,11 @@ const empleadosModel = require("../models/employeesModel");
 const factory = require("../utils/factory");
 const AppError = require("../utils/appErrorClass");
 const catchAsync = require("../utils/catchAsync");
+const VacantesModel = require("../models/vacantesModel");
 const path = require("path");
 
 const multer = require("multer");
+const vacantesModel = require("../models/vacantesModel");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -23,12 +25,20 @@ exports.subirDocumento = upload.single("document");
 
 exports.createEntrevistado = catchAsync(async (req, res, next) => {
   const empleado = await empleadosModel.findOne({ cedula: req.body.cedula });
-  console.log(empleado);
 
   if (empleado)
     return next(new AppError("Ya existe un empleado con esa cedula", 409));
 
   const Entrevistados = await EntrevistadosModel.create(req.body);
+
+  await vacantesModel.updateOne(
+    { nombre: req.body.vacanteAplicada },
+    { $pull: { Solicitantes: Entrevistados._id } },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   res.status(201).json({
     status: "Success",
@@ -50,7 +60,6 @@ exports.verEntrevistados = catchAsync(async (req, res, next) => {
 });
 
 exports.editarEntrevistado = catchAsync(async (req, res, next) => {
-
   if (req.file) {
     req.body.document = req.file.filename;
   }

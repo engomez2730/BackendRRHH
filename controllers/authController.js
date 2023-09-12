@@ -16,9 +16,6 @@ const signToken = (id) => {
 
 const createSendToken = (user, statusCode, res, req) => {
   const token = signToken(user._id);
-  if (!token) {
-    console.log("GGGGG");
-  }
 
   const cookieOptions = {
     expiresIn:
@@ -46,8 +43,6 @@ exports.verLogin = (req, res, next) => {
 };
 
 exports.crearEmpleado = catchAsync(async (req, res, next) => {
-  console.log(req.body.tipoDeNomina);
-
   req.body.cedula = Number(req.body.cedula);
   req.body.celular = Number(req.body.celular);
   req.body.contactoDeEmergencia = Number(req.body.contactoDeEmergencia);
@@ -93,6 +88,8 @@ exports.signIn = catchAsync(async (req, res, next) => {
 
   if (User.estado === false)
     next(new AppError("Este usuario no esta activo en la empresa", 403));
+
+  console.log(User);
 
   req.user = User;
   createSendToken(User, 201, res, req);

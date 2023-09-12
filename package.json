@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "A web application for Vargasam company. ",
+  "description": "A web application for VargSang company. ",
   "main": "app.js",
   "scripts": {
     "start": "nodemon server.js"
