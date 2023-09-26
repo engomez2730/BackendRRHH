@@ -5,7 +5,6 @@ const AppError = require("../utils/appErrorClass");
 const catchAsync = require("../utils/catchAsync");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
-const calcularNomina = require("../utils/calcularVacaciones");
 const personasEntrevistadas = require("../models/PersonasEntrevistadas");
 
 const signToken = (id) => {
@@ -54,6 +53,7 @@ exports.crearEmpleado = catchAsync(async (req, res, next) => {
     return next(
       new AppError(`No existe departamento ${req.body.departamento}`, 401)
     );
+
   //Empleado
   const newEmpleado = await employeeModel.create(req.body);
 
@@ -76,20 +76,17 @@ exports.crearEmpleado = catchAsync(async (req, res, next) => {
 });
 
 exports.signIn = catchAsync(async (req, res, next) => {
-  console.log(req.body);
-
   const { correo, password } = req.body;
   if (!correo || !password)
     return next(new AppError("Debe introducir correo y contraseña", 401));
   const User = await employeeModel.findOne({ correo: correo });
+
   if (!User || !(await User.correctPassword(password, User.password))) {
     return next(new AppError("Contraseña o correo incorrectos", 401));
   }
 
   if (User.estado === false)
     next(new AppError("Este usuario no esta activo en la empresa", 403));
-
-  console.log(User);
 
   req.user = User;
   createSendToken(User, 201, res, req);

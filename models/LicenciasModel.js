@@ -7,7 +7,7 @@ const LicenciaSchema = new mongoose.Schema(
       type: String,
       required: [true, "Una Licencia debe tener una descripción"],
     },
-    razon: {
+    tipoDeLicencia: {
       type: String,
       required: [true, "Una Licencia debe tener una razon"],
     },
@@ -36,8 +36,6 @@ const LicenciaSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
-
 
 const LicenciasModel = new mongoose.model("Licencias", LicenciaSchema);
 

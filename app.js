@@ -24,6 +24,8 @@ const beneficiosRoute = require("./routes/beneficiosRoute");
 const licenciasRoute = require("./routes/licenciasRoutes");
 const amonestacion = require("./routes/amonestacionesRouter");
 const rootRoute = require("./routes/rootRoute");
+const equipos = require("./routes/equiposRoute");
+const proyectos = require("./routes/ProyectosRoute");
 
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.json({ limit: "20kb" }));
@@ -53,6 +55,8 @@ app.use("/api/v1/epp", epp);
 app.use("/api/v1/beneficios", beneficiosRoute);
 app.use("/api/v1/licencias", licenciasRoute);
 app.use("/api/v1/amonestaciones", amonestacion);
+app.use("/api/v1/equipos", equipos);
+app.use("/api/v1/proyectos", proyectos);
 
 app.all("*", (req, res, next) => {
   return next(new AppError(`La ruta ${req.originalUrl} no existe ☹`, 404));

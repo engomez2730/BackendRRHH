@@ -126,7 +126,7 @@ const employeesSchema = new mongoose.Schema(
       type: Date,
       require: [true, "Debes poner tu edad"],
     },
-    vencimientoDelContrato: {
+    expiracionDelContrato: {
       type: Date,
       required: false,
     },
@@ -159,6 +159,25 @@ const employeesSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    buenaConductaFechaExpiracion: {
+      type: Date,
+    },
+    induccionFechaDeExpiracion: {
+      type: Date,
+    },
+    analisisFechaDeExpiracion: {
+      type: Date,
+    },
+    proyectoActual: {
+      type: String,
+    },
+    comentarioStatus: {
+      type: String,
+    },
+    StatusLaboral: {
+      type: String,
+    },
+
     Licencias: [
       {
         type: mongoose.Schema.ObjectId,
@@ -201,6 +220,15 @@ const employeesSchema = new mongoose.Schema(
         ref: "Permisos",
       },
     ],
+    Equipos: {
+      type: [String],
+    },
+    Proyectos: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Proyectos",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -216,7 +244,6 @@ employeesSchema.pre("save", async function (next) {
   if (this.password) {
     this.password = await bcrypt.hash(this.password, 12);
   }
-
   // Delete passwordConfirm field
   this.confirmPassword = undefined;
   // Converting Born day to Moment

@@ -24,7 +24,7 @@ exports.crearVacaciones = catchAsync(async (req, res, next) => {
   }
 
   const diasDeVacaciones = calcularVacaciones.vacaciones(
-    empleadoPrueba.createdAt
+    empleadoPrueba.inicioLaboral
   );
 
   if (diasDeVacaciones <= 0) {

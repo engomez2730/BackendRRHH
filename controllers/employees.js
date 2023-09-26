@@ -113,7 +113,7 @@ exports.verEmpleados = catchAsync(async (req, res) => {
 });
 
 exports.eliminarEmpleados = catchAsync(async (req, res) => {
-  await employeeModel.deleteMany(req.body);
+  await employeeModel.deleteMany({ rol: { $ne: "admin" } });
   res.status(201).json({
     status: "Success",
   });
@@ -150,7 +150,7 @@ exports.verEmpleado = catchAsync(async (req, res, next) => {
 });
 
 exports.editarEmpleado = catchAsync(async (req, res, next) => {
-  console.log(req.file, req.files);
+  console.log(req.body);
   let filterOBject = { ...req.body };
   if (req.file) {
     filterOBject.photo = req.file.filename;
@@ -185,8 +185,6 @@ exports.editarEmpleado = catchAsync(async (req, res, next) => {
       }
     );
   }
-
-  console.log(req.body);
 
   const doc = await employeeModel.findByIdAndUpdate(
     req.params.id,
