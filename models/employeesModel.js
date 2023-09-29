@@ -178,6 +178,10 @@ const employeesSchema = new mongoose.Schema(
       type: String,
     },
 
+    siguientesVacacionesFecha: {
+      type: Date,
+    },
+
     Licencias: [
       {
         type: mongoose.Schema.ObjectId,

@@ -19,17 +19,9 @@ exports.crearVacaciones = catchAsync(async (req, res, next) => {
 
   const empleadoPrueba = await empleadosModel.findById(req.body.key);
 
-  if (req.body.diasDeVacaciones === 0) {
-    return next(new AppError("No tiene derechos a vacaciones", 403));
-  }
-
   const diasDeVacaciones = calcularVacaciones.vacaciones(
     empleadoPrueba.inicioLaboral
   );
-
-  if (diasDeVacaciones <= 0) {
-    return next(new AppError("No tienes derecho a vacaciones aun"));
-  }
 
   const newVacaciones = await vacacionesModel.create(req.body);
 
@@ -83,6 +75,7 @@ exports.verVacacion = catchAsync(async (req, res, next) => {
 });
 
 exports.editarVacacion = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   const vacacion = await vacacionesModel.findByIdAndUpdate(
     req.params.id,
     req.body
@@ -95,5 +88,3 @@ exports.editarVacacion = catchAsync(async (req, res, next) => {
     vacacion,
   });
 });
-/* exports.actualizarAnuncio = factory.updateOne(anunciosModel) 
-exports.eliminarAnuncio = factory.deleteOne(anunciosModel)  */
