@@ -1,5 +1,4 @@
 const catchAsync = require("../utils/catchAsync");
-const factory = require("../utils/factory");
 const permisosModel = require("../models/permisosModel");
 const empleadosModel = require("../models/employeesModel");
 const AppError = require("../utils/appErrorClass");
@@ -7,7 +6,16 @@ const AppError = require("../utils/appErrorClass");
 exports.crearPermiso = catchAsync(async (req, res) => {
   const newPermiso = await permisosModel.create(req.body);
 
-  console.log(req.body);
+  if (req.body.historial) {
+    await empleadosModel.updateOne(
+      { _id: req.body.empleado },
+      { $push: { historial: req.body.historial } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  }
 
   const empleadoEditado = await empleadosModel.updateOne(
     { _id: req.body.empleado },

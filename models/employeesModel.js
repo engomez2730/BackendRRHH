@@ -182,6 +182,21 @@ const employeesSchema = new mongoose.Schema(
       type: Date,
     },
 
+    historial: [
+      {
+        accion: String,
+        fecha: Date,
+        color: String,
+      },
+    ],
+
+    Ausencias: [
+      {
+        razon: String,
+        fecha: Date,
+      },
+    ],
+
     Licencias: [
       {
         type: mongoose.Schema.ObjectId,

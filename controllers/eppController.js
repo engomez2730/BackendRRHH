@@ -1,75 +1,84 @@
-const catchAsync =  require('../utils/catchAsync')
-const factory = require('../utils/factory')
-const eppModel = require('../models/eppModel')
-const empleadosModel = require('../models/employeesModel')
-const AppError = require('../utils/appErrorClass')
+const catchAsync = require("../utils/catchAsync");
+const factory = require("../utils/factory");
+const eppModel = require("../models/eppModel");
+const empleadosModel = require("../models/employeesModel");
+const AppError = require("../utils/appErrorClass");
 
+exports.crearEpp = catchAsync(async (req, res) => {
+  const newEpp = await eppModel.create(req.body);
 
-exports.crearEpp = catchAsync(async (req,res) =>{
-    console.log(req.body)
-    const newEpp = await eppModel.create(req.body)
-    await empleadosModel.updateOne({_id:req.body.Usuario},{$push:{Epps:newEpp._id}},{
-        new:true,
-        runValidators:true
-    })
-    res.status(201).json({
-        status:'Success',
-        newEpp
-    })
-})
+  if (req.body.historial) {
+    await empleadosModel.updateOne(
+      { _id: req.body.Usuario },
+      { $push: { historial: req.body.historial } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  }
 
-exports.verEpps= catchAsync(async (req,res) =>{
-    const verEpps = await eppModel.find({}).populate('Usuario')
+  await empleadosModel.updateOne(
+    { _id: req.body.Usuario },
+    { $push: { Epps: newEpp._id } },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(201).json({
+    status: "Success",
+    newEpp,
+  });
+});
 
-    res.status(201).json({
-        status:'Success',
-        verEpps
-    })
-})
+exports.verEpps = catchAsync(async (req, res) => {
+  const verEpps = await eppModel.find({}).populate("Usuario");
 
-exports.deleteEpps= catchAsync(async (req,res) =>{
- await eppModel.deleteMany()
+  res.status(201).json({
+    status: "Success",
+    verEpps,
+  });
+});
 
-    res.status(201).json({
-        status:'Success'
-    })
-})
+exports.deleteEpps = catchAsync(async (req, res) => {
+  await eppModel.deleteMany();
 
-exports.verEpp = catchAsync(async (req,res,next) =>{
-    const Epp = await eppModel.findById(req.params.id).populate('Empleados')
-    if(!Epp) return next(new AppError('No existe documento con este ID',404))
+  res.status(201).json({
+    status: "Success",
+  });
+});
 
+exports.verEpp = catchAsync(async (req, res, next) => {
+  const Epp = await eppModel.findById(req.params.id).populate("Empleados");
+  if (!Epp) return next(new AppError("No existe documento con este ID", 404));
 
-    res.status(201).json({
-        status:'Success',
-        Epp
-    })
-})
+  res.status(201).json({
+    status: "Success",
+    Epp,
+  });
+});
 
-exports.actualizarEpp = catchAsync(async (req,res,next) =>{
-    const epp = await eppModel.findByIdAndUpdate(req.params.id,req.body,{
-        new:true,
-        runValidators:true
-    })
+exports.actualizarEpp = catchAsync(async (req, res, next) => {
+  const epp = await eppModel.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
-    if(!epp) return next(new AppError('No existe documento con este ID',404))
+  if (!epp) return next(new AppError("No existe documento con este ID", 404));
 
+  res.status(201).json({
+    status: "Success",
+    epp,
+  });
+});
 
-    res.status(201).json({
-        status:'Success',
-        epp
-    })
-})
+exports.eliminarEpp = catchAsync(async (req, res, next) => {
+  const epp = await eppModel.findByIdAndDelete(req.params.id);
 
-exports.eliminarEpp = catchAsync(async (req,res,next) =>{
+  if (!epp) return next(new AppError("No existe documento con este ID", 404));
 
-    const epp = await eppModel.findByIdAndDelete(req.params.id)
-
-    if(!epp) return next(new AppError('No existe documento con este ID',404))
-
-    res.status(201).json({
-        status:'Success'
-    })
-})
-
-
+  res.status(201).json({
+    status: "Success",
+  });
+});

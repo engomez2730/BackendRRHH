@@ -6,7 +6,6 @@ const AppError = require("../utils/appErrorClass");
 const calcularNomina = require("../utils/calcularVacaciones");
 
 exports.crearAmonestacion = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   if (!req.body.nombreAmonestacion || !req.body.cantidadAmonestacion) {
     return next(new AppError("Debes insertar la data"));
   }
@@ -14,6 +13,18 @@ exports.crearAmonestacion = catchAsync(async (req, res, next) => {
   req.body.cantidadAmonestacion = req.body.cantidadAmonestacion * -1;
 
   const Amonestacion = await AmonestacionModel.create(req.body);
+
+  if (req.body.historial) {
+    await employeesModel.updateOne(
+      { _id: req.body.key },
+      { $push: { historial: req.body.historial } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  }
+
   await employeesModel.updateOne(
     { _id: req.body.key },
     { $push: { Amonestaciones: Amonestacion._id } },

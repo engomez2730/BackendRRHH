@@ -12,6 +12,17 @@ exports.crearBeneficios = catchAsync(async (req, res, next) => {
 
   const Beneficios = await BeneficiosModel.create(req.body);
 
+  if (req.body.historial) {
+    await employeesModel.updateOne(
+      { _id: req.body.key },
+      { $push: { historial: req.body.historial } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  }
+
   await employeesModel.updateOne(
     { _id: req.body.key },
     { $push: { Beneficios: Beneficios._id } },

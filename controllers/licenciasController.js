@@ -6,6 +6,18 @@ const AppError = require("../utils/appErrorClass");
 
 exports.crearLicencia = catchAsync(async (req, res) => {
   const newLicencia = await licenciasModel.create(req.body);
+
+  if (req.body.historial) {
+    await empleadosModel.updateOne(
+      { _id: req.body.empleado },
+      { $push: { historial: req.body.historial } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  }
+
   await empleadosModel.updateOne(
     { _id: req.body.empleado },
     { $push: { Licencias: newLicencia._id } },

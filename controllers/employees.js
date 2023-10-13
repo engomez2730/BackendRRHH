@@ -218,6 +218,21 @@ exports.eliminarEmpleado = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.ponerAusencia = catchAsync(async (req, res, next) => {
+  await employeeModel.updateOne(
+    { _id: req.params.id },
+    { $push: { Ausencias: req.body } },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    status: "success",
+  });
+});
+
 exports.agregarBeneficio = catchAsync(async (req, res, next) => {
   req.body.Beneficios.forEach(async (e) => {
     await employeeModel.updateOne(
@@ -231,18 +246,6 @@ exports.agregarBeneficio = catchAsync(async (req, res, next) => {
   });
   res.status(200).json({
     status: "success",
-  });
-});
-
-exports.ponerAusencia = catchAsync(async (req, res, next) => {
-  const empleadoAusenciaUpdateds = await employeeModel.findById(req.params.id);
-  if (!empleadoAusenciaUpdateds)
-    next(new AppError("No existe empleado con este ID"));
-  empleadoAusenciaUpdateds.ausencias = empleadoAusenciaUpdateds.ausencias + 1;
-  await empleadoAusenciaUpdateds.save();
-  res.status(201).json({
-    status: "Success",
-    empleadoAusenciaUpdateds,
   });
 });
 
@@ -372,5 +375,53 @@ exports.getEmpleadosStats = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     statsFinal,
+  });
+});
+
+exports.ausenciasStats = catchAsync(async (req, res) => {
+  const pipeline = [
+    {
+      $unwind: "$Ausencias",
+    },
+    {
+      $match: {
+        "Ausencias.fecha": {
+          $gte: new Date(req.query.year, 0, 1), // Start of the year
+          $lt: new Date(Number(req.query.year) + 1, 0, 1), // Start of the next year
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          month: { $month: "$Ausencias.fecha" },
+          year: { $year: "$Ausencias.fecha" },
+        },
+        ausencias: {
+          $push: {
+            fecha: "$Ausencias.fecha",
+            razon: "$Ausencias.razon",
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: "$_id.month",
+        year: "$_id.year",
+        ausencias: 1,
+      },
+    },
+  ];
+
+  const result = await employeeModel.aggregate(pipeline);
+
+  // Replace 'totalEmployees' with the actual total number of employees.
+  // You can get this count with another Mongoose query.
+
+  res.status(200).json({
+    status: "success",
+    result,
   });
 });

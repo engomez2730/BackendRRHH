@@ -11,6 +11,7 @@ Router.route("/")
 Router.route("/buscar").get(employeesController.verEmpleadosBuscar);
 
 Router.route("/stats/").get(employeesController.getEmpleadosStats);
+Router.route("/ausenciasStats/").get(employeesController.ausenciasStats);
 
 Router.route("/despidos/:id").patch(employeesController.despedirEmpleado);
 
@@ -28,8 +29,6 @@ Router.route("/:id")
   )
   .delete(employeesController.eliminarEmpleado);
 
-Router.route("/ausencias/:id")
-  .patch(employeesController.ponerAusencia)
-  .delete(employeesController.eliminarEmpleado);
+Router.route("/ausencias/:id").patch(employeesController.ponerAusencia);
 
 module.exports = Router;

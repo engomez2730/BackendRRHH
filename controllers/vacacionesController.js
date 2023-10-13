@@ -17,11 +17,16 @@ exports.crearVacaciones = catchAsync(async (req, res, next) => {
     req.body?.tiempoDeVacaciones[0]
   );
 
-  const empleadoPrueba = await empleadosModel.findById(req.body.key);
-
-  const diasDeVacaciones = calcularVacaciones.vacaciones(
-    empleadoPrueba.inicioLaboral
-  );
+  if (req.body.historial) {
+    await empleadosModel.updateOne(
+      { _id: req.body.key },
+      { $push: { historial: req.body.historial } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  }
 
   const newVacaciones = await vacacionesModel.create(req.body);
 
