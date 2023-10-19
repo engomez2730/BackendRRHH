@@ -6,6 +6,9 @@ const AppError = require("../utils/appErrorClass");
 const calcular = require("../utils/calcularVacaciones");
 
 exports.crearDespido = catchAsync(async (req, res, next) => {
+  console.log(req.body);
+  console.log(req.params.id);
+  console.log("HOla");
   const usuario = await employeeModel
     .findByIdAndUpdate(
       req.params.id,
@@ -16,46 +19,6 @@ exports.crearDespido = catchAsync(async (req, res, next) => {
       }
     )
     .populate("Vacaciones");
-
-  /*   if (req.body.tipo === "Desahucio") {
-    const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
-    prestaciones = calcular.calcularPrestaciones(
-      usuario.createdAt,
-      usuario.salarioBruto,
-      false,
-      sueldoDeVacaciones,
-      regalia
-    );
-  } else if (req.body.tipo === "Renuncia") {
-    const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
-    prestaciones = regalia + sueldoDeVacaciones;
-  } else if (req.body.tipo === "Despido") {
-    const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
-    prestaciones = regalia + sueldoDeVacaciones;
-  } else if (req.body.tipo === "Dimision") {
-    const regalia = calcular.regalia(usuario.createdAt, usuario.salarioBruto);
-    prestaciones = calcular.calcularPrestaciones(
-      usuario.createdAt,
-      usuario.salarioBruto,
-      false,
-      sueldoDeVacaciones,
-      regalia
-    );
-  } else if (req.body.tipo === "Muerte") {
-    const sueldoDeudor = (usuario.salarioBruto / 30) * new Date().getDate();
-    const meses = calculateMonths(new Date(), new Date(usuario.createdAt));
-    let AsistenciaEconomica;
-    if (meses >= 3) {
-      AsistenciaEconomica = (usuario.salarioBruto * 30) / 5;
-    }
-    if (meses >= 6) {
-      AsistenciaEconomica = (usuario.salarioBruto * 30) / 10;
-    }
-    if (meses > 12) {
-      AsistenciaEconomica = (usuario.salarioBruto * 30) / 15;
-    }
-    prestaciones = AsistenciaEconomica + sueldoDeudor + sueldoDeVacaciones;
-  } */
 
   const newDespido = await despidosModel.create({
     tipoDeDespido: req.body.tipo,

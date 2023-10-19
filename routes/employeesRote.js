@@ -1,6 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 const employeesController = require("../controllers/employees");
+const despidosController = require("../controllers/despidosController");
 const authController = require("../controllers/authController");
 
 Router.route("/")
@@ -9,6 +10,10 @@ Router.route("/")
   .delete(employeesController.eliminarEmpleados);
 
 Router.route("/buscar").get(employeesController.verEmpleadosBuscar);
+Router.route("/agregardimitidos").post(
+  employeesController.agregarDimitido,
+  despidosController.crearDespido
+);
 
 Router.route("/stats/").get(employeesController.getEmpleadosStats);
 Router.route("/ausenciasStats/").get(employeesController.ausenciasStats);

@@ -22,19 +22,12 @@ const employeesSchema = new mongoose.Schema(
     },
     direccion: {
       type: String,
-      required: [true, "Un empleado debe tener una cedula"],
     },
     celular: {
       type: Number,
-      required: [true, "Un empleado debe tener este campo"],
-      unique: [
-        true,
-        "El numero de telefono del empleado existe en la base de datos",
-      ],
     },
     correo: {
       type: String,
-      unique: [true, "Este correo ya existe"],
     },
     provincia: {
       type: String,
@@ -77,7 +70,6 @@ const employeesSchema = new mongoose.Schema(
     },
     pais: {
       type: String,
-      required: [true, "Un empleado debe tener este campo"],
     },
     createdAt: {
       type: Date,
@@ -91,7 +83,6 @@ const employeesSchema = new mongoose.Schema(
     },
     tipoDeNomina: {
       type: String,
-      required: [true, "Un empleado debe tener este campo"],
       enum: ["Nomina Fija", "Por Hora"],
     },
     estado: {
@@ -119,7 +110,6 @@ const employeesSchema = new mongoose.Schema(
     },
     genero: {
       type: String,
-      required: [true, "Un empleado debe tener este campo"],
       enum: ["Hombre", "Mujer", "Otro"],
     },
     fechaDeNacimiento: {
@@ -149,7 +139,6 @@ const employeesSchema = new mongoose.Schema(
     },
     contactoDeEmergencia: {
       type: Number,
-      required: [true, "Debes introducir un contacto de emergencia"],
     },
     inicioLaboral: {
       type: Date,
@@ -161,12 +150,15 @@ const employeesSchema = new mongoose.Schema(
     },
     buenaConductaFechaExpiracion: {
       type: Date,
+      default: null,
     },
     induccionFechaDeExpiracion: {
       type: Date,
+      default: null,
     },
     analisisFechaDeExpiracion: {
       type: Date,
+      default: null,
     },
     proyectoActual: {
       type: String,

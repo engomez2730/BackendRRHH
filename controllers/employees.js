@@ -61,6 +61,9 @@ exports.verEmpleadosBuscar = catchAsync(async (req, res) => {
     })
     .populate({
       path: "Permisos",
+    })
+    .populate({
+      path: "Despidos",
     });
 
   res.status(201).json({
@@ -97,6 +100,9 @@ exports.verEmpleados = catchAsync(async (req, res) => {
     })
     .populate({
       path: "Permisos",
+    })
+    .populate({
+      path: "Despidos",
     });
   const Empleados = await query;
   const empleadosTotales = await employeeModel.find({});
@@ -139,6 +145,9 @@ exports.verEmpleado = catchAsync(async (req, res, next) => {
     })
     .populate({
       path: "Permisos",
+    })
+    .populate({
+      path: "Despidos",
     });
 
   res.status(200).json({
@@ -216,6 +225,21 @@ exports.eliminarEmpleado = catchAsync(async (req, res, next) => {
     status: "success",
     empleadoEliminado,
   });
+});
+
+exports.agregarDimitido = catchAsync(async (req, res, next) => {
+  const empleado = await employeeModel.create({
+    nombre: req.body.nombre,
+    apellido: req.body.apellido,
+    celular: req.body.celular,
+    cedula: req.body.cedula,
+    inicioLaboral: req.body.inicioLaboral,
+    puesto: req.body.puesto,
+    salarioBruto: req.body.salarioBruto,
+  });
+  req.params.id = empleado._id;
+
+  next();
 });
 
 exports.ponerAusencia = catchAsync(async (req, res, next) => {
