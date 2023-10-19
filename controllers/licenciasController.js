@@ -1,5 +1,5 @@
 const catchAsync = require("../utils/catchAsync");
-const licenciasModel = require("../models/licenciasModel");
+const licenciasModel = require("../models/LicenciasModel");
 const empleadosModel = require("../models/employeesModel");
 const AppError = require("../utils/appErrorClass");
 
