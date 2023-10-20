@@ -6,10 +6,8 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  console.log(err);
   const valor = Object.keys(err.keyValue);
   const valorV = Object.values(err.keyValue);
-  console.log(valor[0]);
 
   const message = `El campo "${valor[0]}" con valor de "${valorV[0]}" esta en uso por otra entidad`;
   return new AppError(message, 400);
@@ -42,13 +40,12 @@ const sendErrorProd = (err, res) => {
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
-      message: err.message,
+      message: err.message || "Error encontrado",
     });
 
     // Programming or other unknown error: don't leak error details
   } else {
     // 1) Log error
-    console.error("ERROR 💥", err);
 
     // 2) Send generic message
     res.status(500).json({
@@ -65,20 +62,11 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
-    let error = { ...err };
-
-    if (error.name === "CastError") error = handleCastErrorDB(error);
-    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (error.name === "ValidationError")
-      error = handleValidationErrorDB(error);
-
-    if (error.name === "JsonWebTokenError") error = handleJWTError();
-    if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
-    sendErrorProd(error, res);
+    sendErrorDev(err, res);
   }
 
-  /*  res.status(err.statusCode).json({
-        status:err.status,
-        message: err.message
-    }) */
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
 };

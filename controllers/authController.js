@@ -78,10 +78,11 @@ exports.crearEmpleado = catchAsync(async (req, res, next) => {
 exports.signIn = catchAsync(async (req, res, next) => {
   const { correo, password } = req.body;
   if (!correo || !password)
-    return next(new AppError("Debe introducir correo y contraseña", 401));
+    return next(new AppError("Debe introducir correo y contraseña", 402));
   const User = await employeeModel.findOne({ correo: correo });
 
   if (!User || !(await User.correctPassword(password, User.password))) {
+    console.log("Here");
     return next(new AppError("Contraseña o correo incorrectos", 401));
   }
 

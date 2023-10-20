@@ -4,7 +4,7 @@
   "description": "A web application for VargSang company. ",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "Endeson Gomez",
   "license": "ISC",
