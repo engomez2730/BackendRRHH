@@ -142,7 +142,7 @@ const employeesSchema = new mongoose.Schema(
     },
     inicioLaboral: {
       type: Date,
-      default: null,
+      require: [true, "Debe poner un inicio laboral"],
     },
     costoPorHora: {
       type: Number,
